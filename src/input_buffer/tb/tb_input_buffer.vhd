@@ -175,17 +175,14 @@ begin
 
 
         procedure rx_data_lch is
-            constant HEADER  : std_logic_vector(63 downto 0) := x"FFFF_FFFF_FFFF_FFFF";
-            constant PAYLOAD : std_logic_vector(63 downto 0) := x"0000_0000_0000_0000";
-            constant FOOTER  : std_logic_vector(63 downto 0) := x"AAAA_BBBB_CCCC_DDDD";
         begin
             for i in 0 to RX_DATA_ITERATIONS loop
                 s_axis_lch_tvalid <= '1';
-                s_axis_lch_tdata  <= std_logic_vector(unsigned(HEADER) - to_unsigned(i, 64));
+                s_axis_lch_tdata  <= std_logic_vector(unsigned(x"0123_4567_89AB_CDEF") - to_unsigned(i, 64));
                 wait for (AXI_CLK_T);
-                s_axis_lch_tdata  <= std_logic_vector(unsigned(PAYLOAD) + to_unsigned(i, 64));
+                s_axis_lch_tdata  <= std_logic_vector(unsigned(x"FFFF_FFFF_FFFF_FFFF") + to_unsigned(i, 64));
                 wait for (AXI_CLK_T);
-                s_axis_lch_tdata  <= std_logic_vector(unsigned(FOOTER) - to_unsigned(i, 64));
+                s_axis_lch_tdata  <= std_logic_vector(unsigned(x"FEDC_BA98_7654_3210") - to_unsigned(i, 64));
                 wait for (AXI_CLK_T);
                 s_axis_lch_tvalid <= '0';
                 wait for 15*AXI_CLK_T;
