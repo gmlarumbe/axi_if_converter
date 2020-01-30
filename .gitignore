@@ -1,0 +1,29 @@
+*.cache/
+*.hw/
+*.sim/
+*.runs/
+*.ip_user_files/
+ipshared/
+*.log
+*.jou
+*.swp
+*.ignore
+*~
+*#
+gen_run.xml
+
+
+*xsim.dir/
+
+# ignore all files and subdirectories of directories named IP.
+**/ip/**/*
+
+# Whitelist subdirectories.
+!**/ip/**/*/
+
+# Whitelist xci.
+!**/ip/**/*.xci
+!**/ip/**/*.xcix
+!**/ip/**/*.xml
+!**/ip/**/*.xdc
+!**/ip/**/*.coe
