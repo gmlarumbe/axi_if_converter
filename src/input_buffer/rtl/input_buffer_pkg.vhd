@@ -8,14 +8,14 @@ package input_buffer_types is
 
     type input_buffer_inputs_t is record
         start_burst_master_l : std_logic;
-        bw_counter_rec_l     : std_logic_vector(7 downto 0);
+        bw_counter_l         : std_logic_vector(7 downto 0);
         wlast_l              : std_logic;
         write_done_l         : std_logic;
         short_burst_l        : std_logic;
         send_size_l          : unsigned(9 downto 0);
 
         start_burst_master_r : std_logic;
-        bw_counter_rec_r     : std_logic_vector(7 downto 0);
+        bw_counter_r         : std_logic_vector(7 downto 0);
         wlast_r              : std_logic;
         write_done_r         : std_logic;
         short_burst_r        : std_logic;

@@ -30,14 +30,14 @@ architecture TB of tb_input_buffer is
 
     signal input_buffer_in : input_buffer_inputs_t := (
         start_burst_master_l => '0',
-        bw_counter_rec_l     => x"00",
+        bw_counter_l         => x"00",
         wlast_l              => '0',
         write_done_l         => '0',
         short_burst_l        => '0',
         send_size_l          => (others => '0'),
 
         start_burst_master_r => '0',
-        bw_counter_rec_r     => x"00",
+        bw_counter_r         => x"00",
         wlast_r              => '0',
         write_done_r         => '0',
         short_burst_r        => '0',
@@ -109,8 +109,8 @@ begin
 
     DUT : entity xil_defaultlib.input_buffer
         generic map (
-            LEFT_CH_BASE_ADDRESS  => LEFT_CH_BASE_ADDRESS,
-            RIGHT_CH_BASE_ADDRESS => RIGHT_CH_BASE_ADDRESS,
+            LEFT_CH_BASE_ADDRESS  => LEFT_CH_ST_BASE_ADDRESS,
+            RIGHT_CH_BASE_ADDRESS => RIGHT_CH_ST_BASE_ADDRESS,
             C_M_AXI_BURST_LEN     => C_M_AXI_BURST_LEN
             )
         port map (
@@ -178,11 +178,11 @@ begin
         begin
             for i in 0 to RX_DATA_ITERATIONS loop
                 s_axis_lch_tvalid <= '1';
-                s_axis_lch_tdata  <= std_logic_vector(unsigned(x"0123_4567_89AB_CDEF") - to_unsigned(i, 64));
+                s_axis_lch_tdata  <= std_logic_vector((x"0123_4567_89AB_CDEF") - to_unsigned(i, 64));
                 wait for (AXI_CLK_T);
-                s_axis_lch_tdata  <= std_logic_vector(unsigned(x"FFFF_FFFF_FFFF_FFFF") + to_unsigned(i, 64));
+                s_axis_lch_tdata  <= std_logic_vector((x"FFFF_FFFF_FFFF_FFFF") + to_unsigned(i, 64));
                 wait for (AXI_CLK_T);
-                s_axis_lch_tdata  <= std_logic_vector(unsigned(x"FEDC_BA98_7654_3210") - to_unsigned(i, 64));
+                s_axis_lch_tdata  <= std_logic_vector((x"FEDC_BA98_7654_3210") - to_unsigned(i, 64));
                 wait for (AXI_CLK_T);
                 s_axis_lch_tvalid <= '0';
                 wait for 15*AXI_CLK_T;
@@ -197,7 +197,7 @@ begin
         test_stage <= RX_DATA_L;
         rx_data_lch;
 
-        test_stage <= RX_DATA_BOTH;
+        test_stage      <= RX_DATA_BOTH;
         wait for (AXI_CLK_T);
         tb_aux_buffer_l <= '1';
         tb_aux_buffer_r <= '1';
@@ -224,7 +224,7 @@ begin
             wait for (AXI_CLK_T);
 
             for i in 0 to C_M_AXI_BURST_LEN-1 loop
-                input_buffer_in.bw_counter_rec_l <= std_logic_vector(to_unsigned(i, 8));
+                input_buffer_in.bw_counter_l <= std_logic_vector(to_unsigned(i, 8));
                 wait for (AXI_CLK_T);
             end loop;
 
@@ -240,7 +240,7 @@ begin
             wait for (AXI_CLK_T);
 
             for i in 0 to C_M_AXI_BURST_LEN-1 loop
-                input_buffer_in.bw_counter_rec_l <= std_logic_vector(to_unsigned(i, 8));
+                input_buffer_in.bw_counter_l <= std_logic_vector(to_unsigned(i, 8));
                 wait for (AXI_CLK_T);
             end loop;
 
@@ -263,7 +263,7 @@ begin
             wait for (AXI_CLK_T);
 
             for i in 0 to C_M_AXI_BURST_LEN-1 loop
-                input_buffer_in.bw_counter_rec_r <= std_logic_vector(to_unsigned(i, 8));
+                input_buffer_in.bw_counter_r <= std_logic_vector(to_unsigned(i, 8));
                 wait for (AXI_CLK_T);
             end loop;
 
@@ -276,23 +276,23 @@ begin
 
     wlast_l_proc : process is
     begin
-        if (input_buffer_in.bw_counter_rec_l = x"1F") then
+        if (input_buffer_in.bw_counter_l = x"1F") then
             input_buffer_in.wlast_l <= '1';
             wait for (2*AXI_CLK_T);
             input_buffer_in.wlast_l <= '0';
         end if;
-        wait on input_buffer_in.bw_counter_rec_l;
+        wait on input_buffer_in.bw_counter_l;
     end process wlast_l_proc;
 
 
     wlast_r_proc : process is
     begin
-        if (input_buffer_in.bw_counter_rec_r = x"1F") then
+        if (input_buffer_in.bw_counter_r = x"1F") then
             input_buffer_in.wlast_r <= '1';
             wait for (AXI_CLK_T);
             input_buffer_in.wlast_r <= '0';
         end if;
-        wait on input_buffer_in.bw_counter_rec_r;
+        wait on input_buffer_in.bw_counter_r;
     end process wlast_r_proc;
 
 

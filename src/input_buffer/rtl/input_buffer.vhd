@@ -9,8 +9,8 @@ use xil_defaultlib.global.all;
 entity input_buffer is
     generic (
         C_M_AXI_BURST_LEN     : integer                       := C_M_AXI_BURST_LEN;
-        LEFT_CH_BASE_ADDRESS  : std_logic_vector(31 downto 0) := LEFT_CH_BASE_ADDRESS;
-        RIGHT_CH_BASE_ADDRESS : std_logic_vector(31 downto 0) := RIGHT_CH_BASE_ADDRESS
+        LEFT_CH_BASE_ADDRESS  : std_logic_vector(31 downto 0) := LEFT_CH_ST_BASE_ADDRESS;
+        RIGHT_CH_BASE_ADDRESS : std_logic_vector(31 downto 0) := RIGHT_CH_ST_BASE_ADDRESS
         );
     port (
         inputs     : in  input_buffer_inputs_t;
@@ -310,15 +310,15 @@ begin
     ----------------
     -- COMB LOGIC --
     ----------------
-    m_axis_lch_tdata      <= output_reg_l(to_integer(unsigned(inputs.bw_counter_rec_l)));
     outputs.buffer_size_l <= to_unsigned(to_integer(bram_pointer_l.tail) - to_integer(bram_pointer_l.head), 11);
-    m_axis_lch_tvalid     <= output_reg_out_tvalid_l and output_reg_out_tvalid_l_d;
     outputs.data_l        <= bram_ptr_pos_l;
+    m_axis_lch_tdata      <= output_reg_l(to_integer(unsigned(inputs.bw_counter_l)));
+    m_axis_lch_tvalid     <= output_reg_out_tvalid_l and output_reg_out_tvalid_l_d;
 
-    m_axis_rch_tdata      <= output_reg_r(to_integer(unsigned(inputs.bw_counter_rec_r)));
     outputs.buffer_size_r <= to_unsigned(to_integer(bram_pointer_r.tail) - to_integer(bram_pointer_r.head), 11);
-    m_axis_rch_tvalid     <= output_reg_out_tvalid_r and output_reg_out_tvalid_r_d;
     outputs.data_r        <= bram_ptr_pos_r;
+    m_axis_rch_tdata      <= output_reg_r(to_integer(unsigned(inputs.bw_counter_r)));
+    m_axis_rch_tvalid     <= output_reg_out_tvalid_r and output_reg_out_tvalid_r_d;
 
     -- BRAMs Address read/write management
     bram_a_addrb <= std_logic_vector(idx_l_bram);
@@ -329,7 +329,7 @@ begin
 
 
     --------------------
-    -- Unused Signals --
+    -- Undriven Signals --
     --------------------
     s_axis_lch_tready <= '0';
     s_axis_rch_tready <= '0';
