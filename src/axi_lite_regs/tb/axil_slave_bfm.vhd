@@ -16,7 +16,7 @@ package axil_slave_bfm is
     end record s_common_response_w_in;
 
     type s_common_response_w_out is record
-        s_axi_awaddr  : std_logic_vector(6 downto 0);
+        s_axi_awaddr  : std_logic_vector(31 downto 0);
         s_axi_wdata   : std_logic_vector(31 downto 0);
         s_axi_wstrb   : std_logic_vector(3 downto 0);
         s_axi_awprot  : std_logic_vector(2 downto 0);
@@ -25,28 +25,11 @@ package axil_slave_bfm is
         s_axi_bready  : std_logic;
     end record s_common_response_w_out;
 
-    type s_common_response_w_out_32 is record
-        s_axi_awaddr  : std_logic_vector(31 downto 0);
-        s_axi_wdata   : std_logic_vector(31 downto 0);
-        s_axi_wstrb   : std_logic_vector(3 downto 0);
-        s_axi_awprot  : std_logic_vector(2 downto 0);
-        s_axi_awvalid : std_logic;
-        s_axi_wvalid  : std_logic;
-        s_axi_bready  : std_logic;
-    end record s_common_response_w_out_32;
-
 
     -- AXI Slave Write Request common signals and procedure--
     procedure slave_write_sim (
         signal axi_in   : in  s_common_response_w_in;
         signal axi_out  : out s_common_response_w_out;
-        constant awaddr : in  std_logic_vector(31 downto 0);
-        constant wdata  : in  std_logic_vector(31 downto 0)
-        );
-
-    procedure slave_write_sim_32 (
-        signal axi_in   : in  s_common_response_w_in;
-        signal axi_out  : out s_common_response_w_out_32;
         constant awaddr : in  std_logic_vector(31 downto 0);
         constant wdata  : in  std_logic_vector(31 downto 0)
         );
@@ -86,34 +69,10 @@ use IEEE.std_logic_1164.ALL;
 use IEEE.numeric_std.all;
 
 package body axil_slave_bfm is
+
     procedure slave_write_sim (
         signal axi_in   : in  s_common_response_w_in;
         signal axi_out  : out s_common_response_w_out;
-        constant awaddr : in  std_logic_vector(31 downto 0);
-        constant wdata  : in  std_logic_vector(31 downto 0)
-        ) is
-    begin
-        axi_out.s_axi_awaddr  <= awaddr(6 downto 0);
-        axi_out.s_axi_wdata   <= wdata;
-        axi_out.s_axi_awvalid <= '1';
-        axi_out.s_axi_wvalid  <= '1';
-        axi_out.s_axi_awprot  <= b"000";
-        axi_out.s_axi_wstrb   <= b"1111";
-        axi_out.s_axi_bready  <= '0';
-
-        wait until (axi_in.s_axi_bvalid = '1'); -- Wait until address channel transaction ends and valid is asserted
-        axi_out.s_axi_awvalid <= '0';
-        axi_out.s_axi_wvalid  <= '0';
-        wait until rising_edge(axi_in.s_axi_aclk);
-        axi_out.s_axi_bready <= '1';
-        wait until (axi_in.s_axi_bvalid = '0');
-        axi_out.s_axi_bready <= '0';
-        wait until rising_edge(axi_in.s_axi_aclk);
-    end slave_write_sim;
-
-    procedure slave_write_sim_32 (
-        signal axi_in   : in  s_common_response_w_in;
-        signal axi_out  : out s_common_response_w_out_32;
         constant awaddr : in  std_logic_vector(31 downto 0);
         constant wdata  : in  std_logic_vector(31 downto 0)
         ) is
@@ -126,15 +85,15 @@ package body axil_slave_bfm is
         axi_out.s_axi_wstrb   <= b"1111";
         axi_out.s_axi_bready  <= '0';
 
-        wait until (axi_in.s_axi_bvalid = '1'); -- Wait until address channel transaction ends and valid is asserted
+        wait until (axi_in.s_axi_bvalid = '1');
         axi_out.s_axi_awvalid <= '0';
         axi_out.s_axi_wvalid  <= '0';
         wait until rising_edge(axi_in.s_axi_aclk);
         axi_out.s_axi_bready <= '1';
         wait until (axi_in.s_axi_bvalid = '0');
         axi_out.s_axi_bready <= '0';
-        wait until rising_edge(axi_in.s_axi_aclk); -- Guard cycle
-    end slave_write_sim_32;
+        wait until rising_edge(axi_in.s_axi_aclk);
+    end slave_write_sim;
 
 
     procedure slave_read_sim (

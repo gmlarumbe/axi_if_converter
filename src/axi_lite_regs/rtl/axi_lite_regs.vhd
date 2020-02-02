@@ -80,6 +80,8 @@ architecture RTL of axi_lite_regs is
     alias BIT_SOFT_RESET : std_logic is control_reg(31);
     alias BIT_RUNNING    : std_logic is status_reg(0);
 
+    constant IP_VERSION : std_logic_vector(31 downto 0) := x"DEAD_BEEF";
+
 begin
 
     s_axi_awready <= axi_awready;
@@ -302,13 +304,11 @@ begin
         if rising_edge(s_axi_aclk) then
             if (s_axi_aresetn = '0' or soft_reset_i = '1') then
                 status_reg  <= (others => '0');
-                version_reg <= (others => '0');
+                version_reg <= IP_VERSION;
             else
                 if (system_running = '1') then BIT_RUNNING <= '1';
                 else BIT_RUNNING                           <= '0';
                 end if;
-
-                version_reg <= x"DEAD_BEEF";
 
             end if;
         end if;
