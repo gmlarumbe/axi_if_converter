@@ -7,7 +7,6 @@ library xil_defaultlib;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use xil_defaultlib.axi_interface_converter_types.all;
-use xil_defaultlib.common_ops.all;
 
 entity axi_interface_converter is
     generic (

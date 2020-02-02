@@ -4,7 +4,6 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 library xil_defaultlib;
 use xil_defaultlib.axi_interface_converter_types.all;
-use xil_defaultlib.common_ops.all;
 use xil_defaultlib.global_sim.all;
 
 
@@ -54,8 +53,8 @@ architecture TB of tb_axi_interface_converter is
     signal s_axis_tkeep   : std_logic_vector(7 downto 0)  := (others => '0');
     signal s_axis_tlast   : std_logic                     := '0';
 
-    signal m_axis_aclk    : std_logic := '0';
-    signal m_axis_aresetn : std_logic := '0';
+    signal m_axis_aclk    : std_logic;
+    signal m_axis_aresetn : std_logic;
     signal m_axis_tdata   : std_logic_vector(63 downto 0);
     signal m_axis_tvalid  : std_logic;
     signal m_axis_tkeep   : std_logic_vector(7 downto 0);
@@ -112,7 +111,7 @@ architecture TB of tb_axi_interface_converter is
 
     -- TB signals
     signal clk        : std_logic := '1';
-    signal resetn     : std_logic := '1';
+    signal resetn     : std_logic := '0';
     signal stop_clock : std_logic := '0';
 
     type test_stage_t is (

@@ -86,8 +86,8 @@ architecture RTL of s_axi_model is
 
     signal aw_wrap_en       : std_logic;
     signal ar_wrap_en       : std_logic;
-    signal aw_wrap_size     : integer;
-    signal ar_wrap_size     : integer;
+    signal aw_wrap_size     : natural;
+    signal ar_wrap_size     : natural;
     signal axi_awv_awr_flag : std_logic;
     signal axi_arv_arr_flag : std_logic;
     signal axi_awlen_cntr   : std_logic_vector(7 downto 0);
