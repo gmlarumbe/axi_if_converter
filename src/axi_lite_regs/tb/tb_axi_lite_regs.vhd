@@ -37,9 +37,9 @@ architecture TB of tb_axi_lite_regs is
     signal transaction_error : std_logic;
 
     signal count_lch         : unsigned(31 downto 0);
-    signal pattern_count_lch : unsigned(63 downto 0);
+    signal pattern_count_lch : unsigned(31 downto 0);
     signal count_rch         : unsigned(31 downto 0);
-    signal pattern_count_rch : unsigned(63 downto 0);
+    signal pattern_count_rch : unsigned(31 downto 0);
 
     signal bram_overflow_error       : std_logic;
     signal out_reg_underflow_error_l : std_logic;

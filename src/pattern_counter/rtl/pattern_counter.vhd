@@ -18,15 +18,15 @@ entity pattern_counter is
         axis_tready : in std_logic;
 
         count         : out unsigned(31 downto 0);
-        pattern_count : out unsigned(DATA_WIDTH-1 downto 0)
+        pattern_count : out unsigned(31 downto 0)
         );
 
 end entity pattern_counter;
 
 
 architecture RTL of pattern_counter is
-    signal count_i         : unsigned(DATA_WIDTH-1 downto 0);
-    signal pattern_count_i : unsigned(DATA_WIDTH-1 downto 0);
+    signal count_i         : unsigned(31 downto 0);
+    signal pattern_count_i : unsigned(31 downto 0);
 
 begin
 

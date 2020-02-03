@@ -31,9 +31,9 @@ entity axi_lite_regs is
         transaction_error : in std_logic;
 
         count_lch         : in unsigned(31 downto 0);
-        pattern_count_lch : in unsigned(63 downto 0);
+        pattern_count_lch : in unsigned(31 downto 0);
         count_rch         : in unsigned(31 downto 0);
-        pattern_count_rch : in unsigned(63 downto 0);
+        pattern_count_rch : in unsigned(31 downto 0);
 
         bram_overflow_error       : in std_logic;
         out_reg_underflow_error_l : in std_logic;

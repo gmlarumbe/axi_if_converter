@@ -251,9 +251,9 @@ architecture RTL of top is
 
     -- Pattern counters <-> Register interface
     signal count_lch         : unsigned(31 downto 0);
-    signal pattern_count_lch : unsigned(63 downto 0);
+    signal pattern_count_lch : unsigned(31 downto 0);
     signal count_rch         : unsigned(31 downto 0);
-    signal pattern_count_rch : unsigned(63 downto 0);
+    signal pattern_count_rch : unsigned(31 downto 0);
 
     -- Registers <-> FSM signals
     signal system_enable  : std_logic;
