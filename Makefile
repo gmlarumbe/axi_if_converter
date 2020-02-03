@@ -164,7 +164,7 @@ global_sim:
 ###########################
 ## Setup
 ##########################
-setup: unisim
+setup: check_req unisim
 	mkdir -p $(WORKDIR)
 	mkdir -p $(WAVES_DIR)
 
@@ -172,6 +172,9 @@ clean: force
 	rm -rf $(WORKDIR)
 	rm -rf $(WAVES_DIR)
 	rm -rf .Xil
+
+check_req:
+	$(SCRIPTSDIR)/check_requirements.sh
 
 
 ###########################
