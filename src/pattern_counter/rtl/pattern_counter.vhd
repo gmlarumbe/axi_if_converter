@@ -17,7 +17,7 @@ entity pattern_counter is
         axis_tdata  : in std_logic_vector(DATA_WIDTH-1 downto 0);
         axis_tready : in std_logic;
 
-        count         : out unsigned(DATA_WIDTH-1 downto 0);
+        count         : out unsigned(31 downto 0);
         pattern_count : out unsigned(DATA_WIDTH-1 downto 0)
         );
 

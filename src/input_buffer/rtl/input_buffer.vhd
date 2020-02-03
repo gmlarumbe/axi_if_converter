@@ -310,13 +310,13 @@ begin
     ----------------
     -- COMB LOGIC --
     ----------------
-    outputs.buffer_size_l <= to_unsigned(to_integer(bram_pointer_l.tail) - to_integer(bram_pointer_l.head), 11);
-    outputs.data_l        <= bram_ptr_pos_l;
+    outputs.buffer_size_l <= bram_pointer_l.tail - bram_pointer_l.head;
+    outputs.bram_ptr_l    <= bram_ptr_pos_l;
     m_axis_lch_tdata      <= output_reg_l(to_integer(unsigned(inputs.bw_counter_l)));
     m_axis_lch_tvalid     <= output_reg_out_tvalid_l and output_reg_out_tvalid_l_d;
 
-    outputs.buffer_size_r <= to_unsigned(to_integer(bram_pointer_r.tail) - to_integer(bram_pointer_r.head), 11);
-    outputs.data_r        <= bram_ptr_pos_r;
+    outputs.buffer_size_r <= bram_pointer_r.tail - bram_pointer_r.head;
+    outputs.bram_ptr_r    <= bram_ptr_pos_r;
     m_axis_rch_tdata      <= output_reg_r(to_integer(unsigned(inputs.bw_counter_r)));
     m_axis_rch_tvalid     <= output_reg_out_tvalid_r and output_reg_out_tvalid_r_d;
 

@@ -14,6 +14,34 @@ entity axi_lite_regs is
         system_enable  : out std_logic;
         system_running : in  std_logic;
 
+        -- TODO:
+        conv_op_lch : out std_logic;
+        conv_op_rch : out std_logic;
+
+        write_request : out std_logic;
+        write_data    : out std_logic_vector(31 downto 0);
+        write_address : out std_logic_vector(31 downto 0);
+        write_done    : in  std_logic;
+
+        read_request    : out std_logic;
+        read_address    : out std_logic_vector(31 downto 0);
+        read_data       : in  std_logic_vector (31 downto 0);
+        read_data_valid : in  std_logic;
+
+        transaction_error : in std_logic;
+
+        count_lch         : in unsigned(31 downto 0);
+        pattern_count_lch : in unsigned(63 downto 0);
+        count_rch         : in unsigned(31 downto 0);
+        pattern_count_rch : in unsigned(63 downto 0);
+
+        bram_overflow_error       : in std_logic;
+        out_reg_underflow_error_l : in std_logic;
+        out_reg_overflow_error_l  : in std_logic;
+        out_reg_underflow_error_r : in std_logic;
+        out_reg_overflow_error_r  : in std_logic;
+        -- End of TODO:
+
         s_axi_aclk    : in  std_logic;
         s_axi_aresetn : in  std_logic;
         s_axi_awaddr  : in  std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);

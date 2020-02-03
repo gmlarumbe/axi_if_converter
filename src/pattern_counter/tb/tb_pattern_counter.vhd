@@ -25,7 +25,7 @@ architecture TB of tb_pattern_counter is
     signal axis_tvalid   : std_logic                               := '0';
     signal axis_tdata    : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
     signal axis_tready   : std_logic                               := '0';
-    signal count         : unsigned(DATA_WIDTH-1 downto 0);
+    signal count         : unsigned(31 downto 0);
     signal pattern_count : unsigned(DATA_WIDTH-1 downto 0);
 
     signal stop_clock : std_logic := '0';

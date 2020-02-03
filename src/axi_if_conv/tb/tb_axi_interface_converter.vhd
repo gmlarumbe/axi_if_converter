@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.math_real.all;
 library xil_defaultlib;
-use xil_defaultlib.axi_interface_converter_types.all;
+use xil_defaultlib.global.all;
 use xil_defaultlib.global_sim.all;
 
 

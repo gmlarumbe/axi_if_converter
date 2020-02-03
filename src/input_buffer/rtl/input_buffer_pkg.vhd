@@ -24,10 +24,9 @@ package input_buffer_types is
 
     type input_buffer_outputs_t is record
         buffer_size_l : unsigned(10 downto 0);
-        data_l        : std_logic_vector(31 downto 0);
-
+        bram_ptr_l    : std_logic_vector(31 downto 0);
         buffer_size_r : unsigned(10 downto 0);
-        data_r        : std_logic_vector(31 downto 0);
+        bram_ptr_r    : std_logic_vector(31 downto 0);
     end record;
 
     type bram_read_pointer_t is record

@@ -21,6 +21,31 @@ architecture TB of tb_axi_lite_regs is
     signal soft_reset     : std_logic;
     signal system_enable  : std_logic;
     signal system_running : std_logic;
+    signal conv_op_lch    : std_logic;
+    signal conv_op_rch    : std_logic;
+
+    signal write_request : std_logic                     := '0';
+    signal write_data    : std_logic_vector(31 downto 0) := x"0000_0000";
+    signal write_address : std_logic_vector(31 downto 0) := x"0000_0000";
+    signal write_done    : std_logic;
+
+    signal read_request    : std_logic                     := '0';
+    signal read_address    : std_logic_vector(31 downto 0) := x"0000_0000";
+    signal read_data       : std_logic_vector (31 downto 0);
+    signal read_data_valid : std_logic;
+
+    signal transaction_error : std_logic;
+
+    signal count_lch         : unsigned(31 downto 0);
+    signal pattern_count_lch : unsigned(63 downto 0);
+    signal count_rch         : unsigned(31 downto 0);
+    signal pattern_count_rch : unsigned(63 downto 0);
+
+    signal bram_overflow_error       : std_logic;
+    signal out_reg_underflow_error_l : std_logic;
+    signal out_reg_overflow_error_l  : std_logic;
+    signal out_reg_underflow_error_r : std_logic;
+    signal out_reg_overflow_error_r  : std_logic;
 
     signal s_axi_aclk    : std_logic := '1';
     signal s_axi_aresetn : std_logic;
@@ -61,9 +86,35 @@ begin
             C_S_AXI_ADDR_WIDTH => C_S_AXI_ADDR_WIDTH
             )
         port map (
-            soft_reset     => soft_reset,
+            soft_reset => soft_reset,
+
             system_enable  => system_enable,
             system_running => system_running,
+            conv_op_lch    => conv_op_lch,
+            conv_op_rch    => conv_op_rch,
+
+            write_request => write_request,
+            write_data    => write_data,
+            write_address => write_address,
+            write_done    => write_done,
+
+            read_request    => read_request,
+            read_address    => read_address,
+            read_data       => read_data,
+            read_data_valid => read_data_valid,
+
+            transaction_error => transaction_error,
+
+            count_lch         => count_lch,
+            pattern_count_lch => pattern_count_lch,
+            count_rch         => count_rch,
+            pattern_count_rch => pattern_count_rch,
+
+            bram_overflow_error       => bram_overflow_error,
+            out_reg_underflow_error_l => out_reg_underflow_error_l,
+            out_reg_overflow_error_l  => out_reg_overflow_error_l,
+            out_reg_underflow_error_r => out_reg_underflow_error_r,
+            out_reg_overflow_error_r  => out_reg_overflow_error_r,
 
             s_axi_aclk    => s_axi_aclk,
             s_axi_aresetn => s_axi_aresetn,
@@ -93,9 +144,9 @@ begin
     s_axi_aclk <= (not s_axi_aclk and not stop_clock) after AXI_CLK_T/2;
 
     -- BFM signal connection
-    common_in_r <= (s_axi_aclk, s_axi_arready, s_axi_rready, s_axi_rvalid);
-    (s_axi_araddr, s_axi_arvalid, s_axi_rready) <= common_out_r;
-    common_in_w <= (s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid);
+    common_in_r                                                                                       <= (s_axi_aclk, s_axi_arready, s_axi_rready, s_axi_rvalid);
+    (s_axi_araddr, s_axi_arvalid, s_axi_rready)                                                       <= common_out_r;
+    common_in_w                                                                                       <= (s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid);
     (s_axi_awaddr, s_axi_wdata, s_axi_wstrb, s_axi_awprot, s_axi_awvalid, s_axi_wvalid, s_axi_bready) <= common_out_w;
 
 
