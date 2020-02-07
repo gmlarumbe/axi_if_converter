@@ -20,7 +20,7 @@ architecture TB of tb_axi_lite_regs is
 
     signal soft_reset     : std_logic;
     signal system_enable  : std_logic;
-    signal system_running : std_logic;
+    signal system_running : std_logic := '0';
     signal conv_op_lch    : std_logic;
     signal conv_op_rch    : std_logic;
     signal read_size_l    : unsigned(15 downto 0);
@@ -213,6 +213,12 @@ begin
         read_version_reg;
         system_enable;
         soft_reset;
+
+        system_running <= '1';
+        wait for (50*AXI_CLK_T);
+        system_running <= '0';
+        wait for (50*AXI_CLK_T);
+
         end_test_and_stop_clock(stop_clock);
 
     end process main;
