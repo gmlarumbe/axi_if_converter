@@ -27,3 +27,12 @@ gen_run.xml
 !**/ip/**/*.xml
 !**/ip/**/*.xdc
 !**/ip/**/*.coe
+
+library
+GPATH
+GRTAGS
+GTAGS
+gtags.files
+vivado/project
+vivado/wcfg
+waves
