@@ -256,10 +256,15 @@ architecture RTL of top is
     signal pattern_count_rch : unsigned(31 downto 0);
 
     -- Registers <-> FSM signals
-    signal system_enable  : std_logic;
-    signal system_running : std_logic;
-    signal conv_op_lch    : std_logic;
-    signal conv_op_rch    : std_logic;
+    signal system_enable      : std_logic;
+    signal system_running     : std_logic;
+    signal system_running_lch : std_logic;
+    signal system_running_rch : std_logic;
+    signal conv_op_lch        : std_logic;
+    signal conv_op_rch        : std_logic;
+    signal read_size_l        : unsigned(15 downto 0);
+    signal read_size_r        : unsigned(15 downto 0);
+
 
     -- Converters <-> FSM signals
     signal conv_req_lch         : conversion_req_t;
@@ -285,7 +290,8 @@ architecture RTL of top is
     signal bram_ptr_r    : std_logic_vector(31 downto 0);
 
     -- FS clock divider
-    signal clk_fs : std_logic;
+    signal clk_fs      : std_logic;
+    signal clk_fs_sync : std_logic;
 
 
 begin
@@ -293,7 +299,7 @@ begin
     -- Comb logic
     fb_send_size_l <= b"00" & unsigned(fb_awlen_lch);
     fb_send_size_r <= b"00" & unsigned(fb_awlen_rch);
-
+    system_running <= system_running_lch or system_running_rch;
 
     -- Instances
     I_AXI_LITE_REGS : entity xil_defaultlib.axi_lite_regs
@@ -309,6 +315,8 @@ begin
             system_running => system_running,
             conv_op_lch    => conv_op_lch,
             conv_op_rch    => conv_op_rch,
+            read_size_l    => read_size_l,
+            read_size_r    => read_size_r,
 
             -- To axi-lite master
             write_request => write_request,
@@ -679,6 +687,16 @@ begin
             );
 
 
+    I_CLK_FS_SYNC : entity xil_defaultlib.clk_sync
+        port map (
+            clk         => clk,
+            resetn      => resetn,
+            soft_reset  => soft_reset,
+            clk_fs      => clk_fs,
+            clk_fs_sync => clk_fs_sync
+            );
+
+
 
     I_PATTERN_COUNTER_L : entity xil_defaultlib.pattern_counter
         generic map (
@@ -716,37 +734,56 @@ begin
             );
 
 
-    I_CORE_FSM : entity xil_defaultlib.core_fsm
+    I_CORE_FSM_L : entity xil_defaultlib.core_fsm
         port map (
-            clk                  => clk,
-            resetn               => resetn,
-            clk_fs               => clk_fs,
-            soft_reset           => soft_reset,
-            system_enable        => system_enable,
-            system_running       => system_running,
-            -- Left channel
-            conv_op_lch          => conv_op_lch,
-            conv_req_lch         => conv_req_lch,
-            conv_rsp_lch         => conv_rsp_lch,
-            pattern_req_lch      => pattern_req_lch,
-            pattern_len_lch      => pattern_len_lch,
-            pattern_finished_lch => pattern_finished_lch,
-            pattern_tlast_lch    => pattern_tlast_lch,
-            internal_error_lch   => internal_error_lch,
-            buffer_size_l        => buffer_size_l,
-            bram_ptr_l           => bram_ptr_l,
-            -- Right channel
-            conv_op_rch          => conv_op_rch,
-            conv_req_rch         => conv_req_rch,
-            conv_rsp_rch         => conv_rsp_rch,
-            pattern_req_rch      => pattern_req_rch,
-            pattern_len_rch      => pattern_len_rch,
-            pattern_finished_rch => pattern_finished_rch,
-            pattern_tlast_rch    => pattern_tlast_rch,
-            internal_error_rch   => internal_error_rch,
-            buffer_size_r        => buffer_size_r,
-            bram_ptr_r           => bram_ptr_r
+            clk           => clk,
+            resetn        => resetn,
+            clk_fs        => clk_fs_sync,
+            soft_reset    => soft_reset,
+            system_enable => system_enable,
+
+            conv_op  => conv_op_lch,
+            conv_req => conv_req_lch,
+            conv_rsp => conv_rsp_lch,
+
+            pattern_req      => pattern_req_lch,
+            pattern_len      => pattern_len_lch,
+            pattern_finished => pattern_finished_lch,
+            pattern_tlast    => pattern_tlast_lch,
+
+            buffer_size => buffer_size_l,
+            bram_ptr    => bram_ptr_l,
+            read_size   => read_size_l,
+
+            internal_error => internal_error_lch,
+            system_running => system_running_lch
             );
+
+
+    I_CORE_FSM_R : entity xil_defaultlib.core_fsm
+        port map (
+            clk           => clk,
+            resetn        => resetn,
+            clk_fs        => clk_fs_sync,
+            soft_reset    => soft_reset,
+            system_enable => system_enable,
+
+            conv_op          => conv_op_rch,
+            conv_req         => conv_req_rch,
+            conv_rsp         => conv_rsp_rch,
+            pattern_req      => pattern_req_rch,
+            pattern_len      => pattern_len_rch,
+            pattern_finished => pattern_finished_rch,
+            pattern_tlast    => pattern_tlast_rch,
+
+            buffer_size => buffer_size_r,
+            bram_ptr    => bram_ptr_r,
+            read_size   => read_size_r,
+
+            internal_error => internal_error_rch,
+            system_running => system_running_rch
+            );
+
 
 
 end architecture RTL;

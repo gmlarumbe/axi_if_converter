@@ -17,6 +17,8 @@ entity axi_lite_regs is
         -- TODO:
         conv_op_lch : out std_logic;
         conv_op_rch : out std_logic;
+        read_size_l : out unsigned(15 downto 0);
+        read_size_r : out unsigned(15 downto 0);
 
         write_request : out std_logic;
         write_data    : out std_logic_vector(31 downto 0);

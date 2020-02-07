@@ -23,6 +23,8 @@ architecture TB of tb_axi_lite_regs is
     signal system_running : std_logic;
     signal conv_op_lch    : std_logic;
     signal conv_op_rch    : std_logic;
+    signal read_size_l    : unsigned(15 downto 0);
+    signal read_size_r    : unsigned(15 downto 0);
 
     signal write_request : std_logic                     := '0';
     signal write_data    : std_logic_vector(31 downto 0) := x"0000_0000";
@@ -92,6 +94,8 @@ begin
             system_running => system_running,
             conv_op_lch    => conv_op_lch,
             conv_op_rch    => conv_op_rch,
+            read_size_l    => read_size_l,
+            read_size_r    => read_size_r,
 
             write_request => write_request,
             write_data    => write_data,
