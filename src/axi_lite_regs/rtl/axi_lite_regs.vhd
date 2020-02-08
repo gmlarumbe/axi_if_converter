@@ -43,7 +43,7 @@ entity axi_lite_regs is
         out_reg_overflow_error_l  : in std_logic;
         out_reg_underflow_error_r : in std_logic;
         out_reg_overflow_error_r  : in std_logic;
-        
+
         -- Slave AXI interface
         s_axi_aclk    : in  std_logic;
         s_axi_aresetn : in  std_logic;
@@ -100,7 +100,7 @@ architecture RTL of axi_lite_regs is
     signal control_reg              : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
     signal status_reg               : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
     signal version_reg              : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-    signal mm2s_setup_reg           : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+    signal converter_setup_reg      : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
     signal mm2s_size_reg            : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
     signal master_lite_wr_setup_reg : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
     signal master_lite_wr_add_reg   : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
@@ -132,8 +132,8 @@ architecture RTL of axi_lite_regs is
 
     constant IP_VERSION : std_logic_vector(31 downto 0) := x"DEAD_BEEF";
 
-    alias BIT_CONV_OP_L : std_logic is mm2s_setup_reg(0);
-    alias BIT_CONV_OP_R : std_logic is mm2s_setup_reg(1);
+    alias BIT_CONV_OP_L : std_logic is converter_setup_reg(0);
+    alias BIT_CONV_OP_R : std_logic is converter_setup_reg(1);
 
     alias BIT_WRITE_REQUEST   : std_logic is master_lite_wr_setup_reg(0);
     alias BIT_WRITE_DONE      : std_logic is master_lite_wr_setup_reg(31);
@@ -321,7 +321,7 @@ begin
             when b"00010" =>
                 reg_data_out <= version_reg;
             when b"00011" =>
-                reg_data_out <= mm2s_setup_reg;
+                reg_data_out <= converter_setup_reg;
             when b"00100" =>
                 reg_data_out <= mm2s_size_reg;
             when b"00101" =>
@@ -333,14 +333,16 @@ begin
             when b"01000" =>
                 reg_data_out <= master_lite_rd_setup_reg;
             when b"01001" =>
-                reg_data_out <= master_lite_rd_data_reg;
+                reg_data_out <= master_lite_rd_add_reg;
             when b"01010" =>
-                reg_data_out <= count_lch_reg;
+                reg_data_out <= master_lite_rd_data_reg;
             when b"01011" =>
-                reg_data_out <= pattern_count_lch_reg;
+                reg_data_out <= count_lch_reg;
             when b"01100" =>
-                reg_data_out <= count_rch_reg;
+                reg_data_out <= pattern_count_lch_reg;
             when b"01101" =>
+                reg_data_out <= count_rch_reg;
+            when b"01110" =>
                 reg_data_out <= pattern_count_rch_reg;
             when others =>
                 reg_data_out <= (others => '0');
@@ -361,12 +363,13 @@ begin
         if rising_edge(s_axi_aclk) then
             if (s_axi_aresetn = '0') then
                 control_reg              <= (others => '0');
-                mm2s_setup_reg           <= (others => '0');
+                converter_setup_reg      <= (others => '0');
                 mm2s_size_reg            <= (others => '0');
                 master_lite_wr_setup_reg <= (others => '0');
                 master_lite_wr_add_reg   <= (others => '0');
                 master_lite_wr_data_reg  <= (others => '0');
                 master_lite_rd_setup_reg <= (others => '0');
+                master_lite_rd_add_reg   <= (others => '0');
             else
                 loc_addr := axi_awaddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
                 if (slv_reg_wren = '1') then
@@ -381,7 +384,7 @@ begin
                         when b"00011" =>
                             for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
                                 if (s_axi_wstrb(byte_index) = '1') then
-                                    mm2s_setup_reg(byte_index*8+7 downto byte_index*8) <= s_axi_wdata(byte_index*8+7 downto byte_index*8);
+                                    converter_setup_reg(byte_index*8+7 downto byte_index*8) <= s_axi_wdata(byte_index*8+7 downto byte_index*8);
                                 end if;
                             end loop;
 
@@ -417,6 +420,13 @@ begin
                             for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
                                 if (s_axi_wstrb(byte_index) = '1') then
                                     master_lite_rd_setup_reg(byte_index*8+7 downto byte_index*8) <= s_axi_wdata(byte_index*8+7 downto byte_index*8);
+                                end if;
+                            end loop;
+
+                        when b"01001" =>
+                            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
+                                if (s_axi_wstrb(byte_index) = '1') then
+                                    master_lite_rd_add_reg(byte_index*8+7 downto byte_index*8) <= s_axi_wdata(byte_index*8+7 downto byte_index*8);
                                 end if;
                             end loop;
 
@@ -554,14 +564,14 @@ begin
                 write_address <= (others => '0');
                 write_data    <= (others => '0');
                 write_request <= '0';
-                read_address <= (others => '0');
-                read_request <= '0';
+                read_address  <= (others => '0');
+                read_request  <= '0';
             else
                 write_address <= master_lite_wr_add_reg;
                 write_data    <= master_lite_wr_data_reg;
                 write_request <= BIT_WRITE_REQUEST;
-                read_address <= master_lite_wr_add_reg;
-                read_request <= BIT_READ_REQUEST;
+                read_address  <= master_lite_rd_add_reg;
+                read_request  <= BIT_READ_REQUEST;
             end if;
         end if;
     end process master_lite_proc;

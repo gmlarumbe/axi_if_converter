@@ -43,11 +43,11 @@ architecture TB of tb_axi_lite_regs is
     signal count_rch         : unsigned(31 downto 0);
     signal pattern_count_rch : unsigned(31 downto 0);
 
-    signal bram_overflow_error       : std_logic;
-    signal out_reg_underflow_error_l : std_logic;
-    signal out_reg_overflow_error_l  : std_logic;
-    signal out_reg_underflow_error_r : std_logic;
-    signal out_reg_overflow_error_r  : std_logic;
+    signal bram_overflow_error       : std_logic := '0';
+    signal out_reg_underflow_error_l : std_logic := '0';
+    signal out_reg_overflow_error_l  : std_logic := '0';
+    signal out_reg_underflow_error_r : std_logic := '0';
+    signal out_reg_overflow_error_r  : std_logic := '0';
 
     signal s_axi_aclk    : std_logic := '1';
     signal s_axi_aresetn : std_logic;
@@ -157,11 +157,6 @@ begin
     -- Stimuli
     main : process
 
-        constant CONTROL_REG_ADDR  : std_logic_vector(31 downto 0) := x"0000_0000";
-        constant STATUS_REG_ADDR   : std_logic_vector(31 downto 0) := x"0000_0004";
-        constant VERSION_REG_ADDR  : std_logic_vector(31 downto 0) := x"0000_0008";
-        constant RESERVED_REG_ADDR : std_logic_vector(31 downto 0) := x"0000_000C";
-
         procedure init_values is
         begin
             s_axi_aresetn <= '0';
@@ -171,56 +166,94 @@ begin
         end init_values;
 
 
-        procedure read_control_reg is
+        procedure master_read_request is
         begin
-            slave_read_sim(common_in_r, common_out_r, CONTROL_REG_ADDR);
+            write_master_lite_wr_add_reg(common_in_w, common_out_w, x"0000_FFF0");
+            write_master_lite_wr_data_reg(common_in_w, common_out_w, x"BEBA_CAFE");
+            write_master_lite_wr_setup_reg(common_in_w, common_out_w, x"0000_0001");
             wait for (5*AXI_CLK_T);
-        end procedure read_control_reg;
+        end master_read_request;
 
 
-        procedure read_status_reg is
+        procedure master_write_request is
         begin
-            slave_read_sim(common_in_r, common_out_r, STATUS_REG_ADDR);
+            write_master_lite_rd_add_reg(common_in_w, common_out_w, x"0000_FFF0");
+            write_master_lite_rd_setup_reg(common_in_w, common_out_w, x"0000_0001");
             wait for (5*AXI_CLK_T);
-        end procedure read_status_reg;
+        end master_write_request;
 
 
-        procedure read_version_reg is
+        procedure errors_status_reg is
         begin
-            slave_read_sim(common_in_r, common_out_r, VERSION_REG_ADDR);
-            wait for (5*AXI_CLK_T);
-        end procedure read_version_reg;
+            -- Read status reg
+            read_status_reg(common_in_r, common_out_r);
+            -- See errors
+            bram_overflow_error       <= '1';
+            out_reg_underflow_error_l <= '1';
+            out_reg_overflow_error_l  <= '1';
+            out_reg_underflow_error_r <= '1';
+            out_reg_overflow_error_r  <= '1';
+            -- Read again
+            read_status_reg(common_in_r, common_out_r);
+            bram_overflow_error       <= '0';
+            out_reg_underflow_error_l <= '0';
+            out_reg_overflow_error_l  <= '0';
+            out_reg_underflow_error_r <= '0';
+            out_reg_overflow_error_r  <= '0';
+            read_status_reg(common_in_r, common_out_r);
+        end procedure errors_status_reg;
 
 
-        procedure system_enable is
+        procedure system_running_status_reg is
         begin
-            slave_write_sim(common_in_w, common_out_w, CONTROL_REG_ADDR, x"0000_0001");
-            wait for (5*AXI_CLK_T);
-        end procedure system_enable;
-
-
-        procedure soft_reset is
-        begin
-            slave_write_sim(common_in_w, common_out_w, CONTROL_REG_ADDR, x"8000_0000");
-            wait for (5*AXI_CLK_T);
-        end procedure soft_reset;
+            system_running <= '1';
+            wait for (50*AXI_CLK_T);
+            system_running <= '0';
+        end procedure system_running_status_reg;
 
     begin
 
         init_values;
-        read_control_reg;
-        read_status_reg;
-        read_version_reg;
-        system_enable;
-        soft_reset;
-
-        system_running <= '1';
+        read_control_reg(common_in_r, common_out_r);
+        read_status_reg(common_in_r, common_out_r);
+        read_version_reg(common_in_r, common_out_r);
+        read_counters(common_in_r, common_out_r);
+        write_control_reg_system_enable(common_in_w, common_out_w);
+        write_control_reg_system_stop(common_in_w, common_out_w);
+        write_control_reg_soft_reset(common_in_w, common_out_w);
+        wait until soft_reset = '0';
+        master_read_request;
+        master_write_request;
+        errors_status_reg;
+        system_running_status_reg;
+        write_converter_setup_reg(common_in_w, common_out_w, x"0000_0000");  -- Setup as S2MM
+        write_converter_setup_reg(common_in_w, common_out_w, x"0000_0003");  -- Setup as MM2S
+        read_counters(common_in_r, common_out_r);
         wait for (50*AXI_CLK_T);
-        system_running <= '0';
-        wait for (50*AXI_CLK_T);
-
         end_test_and_stop_clock(stop_clock);
 
     end process main;
+
+
+
+    counters_proc : process is
+    begin
+        count_lch         <= (others => '0');
+        pattern_count_lch <= (others => '0');
+        count_rch         <= (others => '0');
+        pattern_count_rch <= (others => '0');
+        wait for (5*AXI_CLK_T);
+
+        for i in 1 to 512 loop
+            count_lch         <= count_lch + 1;
+            pattern_count_lch <= pattern_count_lch + 1;
+            count_rch         <= count_rch + 1;
+            pattern_count_rch <= pattern_count_rch + 1;
+            wait for (AXI_CLK_T);
+        end loop;
+
+        wait;
+    end process counters_proc;
+
 
 end architecture TB;

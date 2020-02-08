@@ -65,7 +65,6 @@ axi_lite_master_src:
 # AXI Lite regs
 ##############################
 axi_lite_regs_sim: global_sim axi_lite_regs_src
-	$(GHDL) -a $(GHDLFLAGS) src/axi_lite_regs/tb/axil_slave_bfm.vhd
 	$(GHDL) -a $(GHDLFLAGS) src/axi_lite_regs/tb/tb_axi_lite_regs.vhd
 	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -r tb_axi_lite_regs $(WAVES)/tb_axi_lite_regs.vcd
 
