@@ -19,6 +19,8 @@ SCRIPTSDIR=scripts
 ##############################
 # All the targets
 ##############################
+all : all_elabs all_sims vivado_syn
+
 all_sims : core_conv_sim axi_lite_master_sim axi_lite_regs_sim core_fsm_sim input_buffer_sim pattern_counter_sim top_sim
 
 all_elabs: core_conv_elab axi_lite_master_elab axi_lite_regs_elab core_fsm_elab input_buffer_elab pattern_counter_elab misc_elab top_elab
@@ -186,13 +188,13 @@ unisim_recompile : unisim_clean unisim
 ###########################
 ## Vivado
 ##########################
-vivado_syn : 
-	test -d vivado/axi_if_converter && $(VIVADO_BIN) vivado/axi_if_converter/axi_if_converter.xpr -mode tcl -source vivado/elaborate.tcl
+vivado_syn : vivado_check vivado_proj
+	$(VIVADO_BIN) vivado/axi_if_converter/axi_if_converter.xpr -mode tcl -source vivado/synthesize.tcl
 
 vivado_proj : vivado_check
-	cd vivado && $(VIVADO_BIN) -mode tcl -source axi_if_converter.tcl
+	cd vivado && test -d axi_if_converter || $(VIVADO_BIN) -mode tcl -source axi_if_converter.tcl
 
-vivado_clean : 
+vivado_clean :
 	rm -rf vivado/axi_if_converter
 
 vivado_check:
