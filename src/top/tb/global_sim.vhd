@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 library xil_defaultlib;
+use xil_defaultlib.global.all;
 use xil_defaultlib.axil_slave_bfm.all;
 
 package global_sim is

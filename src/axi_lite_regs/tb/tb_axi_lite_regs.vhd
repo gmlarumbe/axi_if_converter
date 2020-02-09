@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use IEEE.numeric_std.all;
 library xil_defaultlib;
+use xil_defaultlib.global.all;
 use xil_defaultlib.global_sim.all;
 use xil_defaultlib.axil_slave_bfm.all;
 
@@ -14,9 +15,6 @@ end entity tb_axi_lite_regs;
 
 
 architecture TB of tb_axi_lite_regs is
-
-    constant C_S_AXI_DATA_WIDTH : integer := 32;
-    constant C_S_AXI_ADDR_WIDTH : integer := 7;
 
     signal soft_reset     : std_logic;
     signal system_enable  : std_logic;

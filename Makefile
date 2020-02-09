@@ -140,12 +140,12 @@ misc_src:
 ###########################
 # Global packages
 ###########################
-global_pkg:
-	$(GHDL) -a $(GHDLFLAGS) src/top/rtl/global_pkg.vhd
-
-global_sim:
+global_sim : global_pkg
 	$(GHDL) -a $(GHDLFLAGS) src/axi_lite_regs/tb/axil_slave_bfm.vhd
 	$(GHDL) -a $(GHDLFLAGS) src/top/tb/global_sim.vhd
+
+global_pkg:
+	$(GHDL) -a $(GHDLFLAGS) src/top/rtl/global_pkg.vhd
 
 
 

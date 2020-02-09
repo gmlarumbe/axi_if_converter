@@ -14,14 +14,17 @@ end entity tb_top;
 
 architecture TB of tb_top is
 
-    -- component ports
-    signal clk                : std_logic;
-    signal resetn             : std_logic;
-    signal clk_fs_ext         : std_logic;
+    constant C_S_AXI_DATA_WIDTH : integer := 32;
+    constant C_S_AXI_ADDR_WIDTH : integer := 7;
 
-    signal s_axi_aclk         : std_logic;
-    signal s_axi_aresetn      : std_logic;
-    signal s_axi_awaddr       : std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
+    -- component ports
+    signal clk                : std_logic := '1';
+    signal resetn             : std_logic := '0';
+    signal clk_fs_ext         : std_logic := '1';
+
+    signal s_axi_aclk         : std_logic := '1';
+    signal s_axi_aresetn      : std_logic := '0';
+    signal s_axi_awaddr       : std_logic_vector(31 downto 0);
     signal s_axi_awprot       : std_logic_vector(2 downto 0);
     signal s_axi_awvalid      : std_logic;
     signal s_axi_awready      : std_logic;
@@ -32,7 +35,7 @@ architecture TB of tb_top is
     signal s_axi_bresp        : std_logic_vector(1 downto 0);
     signal s_axi_bvalid       : std_logic;
     signal s_axi_bready       : std_logic;
-    signal s_axi_araddr       : std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
+    signal s_axi_araddr       : std_logic_vector(31 downto 0);
     signal s_axi_arprot       : std_logic_vector(2 downto 0);
     signal s_axi_arvalid      : std_logic;
     signal s_axi_arready      : std_logic;
@@ -187,7 +190,6 @@ architecture TB of tb_top is
     signal m_axi_conf_rvalid  : std_logic;
     signal m_axi_conf_rready  : std_logic;
 
-
     -- BFM
     signal bfm_in_r  : s_common_response_r_in;
     signal bfm_out_r : s_common_response_r_out;
@@ -195,15 +197,8 @@ architecture TB of tb_top is
     signal bfm_out_w : s_common_response_w_out;
 
     signal stop_clock : std_logic := '0';
-    
+
 begin
-
-    -- BFM signal connection
-    bfm_in_r                                                                                       <= (s_axi_aclk, s_axi_arready, s_axi_rready, s_axi_rvalid);
-    (s_axi_araddr, s_axi_arvalid, s_axi_rready)                                                       <= bfm_out_r;
-    bfm_in_w                                                                                       <= (s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid);
-    (s_axi_awaddr, s_axi_wdata, s_axi_wstrb, s_axi_awprot, s_axi_awvalid, s_axi_wvalid, s_axi_bready) <= bfm_out_w;
-
 
     -- component instantiation
     DUT: entity xil_defaultlib.top
@@ -214,7 +209,7 @@ begin
 
             s_axi_aclk         => s_axi_aclk,
             s_axi_aresetn      => s_axi_aresetn,
-            s_axi_awaddr       => s_axi_awaddr,
+            s_axi_awaddr       => s_axi_awaddr(C_S_AXI_ADDR_WIDTH-1 downto 0),
             s_axi_awprot       => s_axi_awprot,
             s_axi_awvalid      => s_axi_awvalid,
             s_axi_awready      => s_axi_awready,
@@ -225,7 +220,7 @@ begin
             s_axi_bresp        => s_axi_bresp,
             s_axi_bvalid       => s_axi_bvalid,
             s_axi_bready       => s_axi_bready,
-            s_axi_araddr       => s_axi_araddr,
+            s_axi_araddr       => s_axi_araddr(C_S_AXI_ADDR_WIDTH-1 downto 0),
             s_axi_arprot       => s_axi_arprot,
             s_axi_arvalid      => s_axi_arvalid,
             s_axi_arready      => s_axi_arready,
@@ -382,11 +377,32 @@ begin
             );
 
     -- clock generation
-    clk <= not clk after 10 ns;
+    clk <= (not clk and not stop_clock) after AXI_CLK_T/2;
+    -- s_axi_aclk <= (not s_axi_aclk and not stop_clock) after AXI_CLK_T/2;
 
-    -- waveform generation
+    s_axi_aresetn <= resetn;
+    s_axi_aclk <= clk;
+
+    -- BFM signal connection
+    bfm_in_r                                                                                       <= (s_axi_aclk, s_axi_arready, s_axi_rready, s_axi_rvalid);
+    (s_axi_araddr, s_axi_arvalid, s_axi_rready)                                                       <= bfm_out_r;
+    bfm_in_w                                                                                       <= (s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid);
+    (s_axi_awaddr, s_axi_wdata, s_axi_wstrb, s_axi_awprot, s_axi_awvalid, s_axi_wvalid, s_axi_bready) <= bfm_out_w;
+
+
+    -- Stimuli
     main: process
+        procedure init_values is
+        begin
+            resetn <= '0';
+            wait for (5*AXI_CLK_T);
+            resetn <= '1';
+            wait for (5*AXI_CLK_T);
+        end init_values;
+
+
     begin
+        init_values;
         read_control_reg(bfm_in_r, bfm_out_r);
         read_status_reg(bfm_in_r, bfm_out_r);
         read_version_reg(bfm_in_r, bfm_out_r);
@@ -396,6 +412,6 @@ begin
         end_test_and_stop_clock(stop_clock);
     end process main;
 
-    
+
 
 end architecture TB;
