@@ -8,7 +8,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use xil_defaultlib.global.all;
 
-entity axi_interface_converter is
+entity core_converter is
     generic (
         C_M_AXI_BURST_LEN    : integer := 256;
         C_M_AXI_ID_WIDTH     : integer := 1;
@@ -102,11 +102,11 @@ entity axi_interface_converter is
         internal_error : out std_logic
         );
 
-end axi_interface_converter;
+end core_converter;
 
 
 
-architecture RTL of axi_interface_converter is
+architecture RTL of core_converter is
 
     function clogb2 (bit_depth : integer) return integer is
         variable depth : integer := bit_depth;

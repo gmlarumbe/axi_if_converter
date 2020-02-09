@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 use xil_defaultlib.global.all;
 use xil_defaultlib.input_buffer_types.all;
 
-entity top is
+entity axi_if_converter is
 
     port (
         -- Non-axi modules clocks and resets
@@ -187,10 +187,10 @@ entity top is
         m_axi_conf_rready  : out std_logic
         );
 
-end entity top;
+end entity axi_if_converter;
 
 
-architecture RTL of top is
+architecture RTL of axi_if_converter is
 
     -- Global signals
     signal soft_reset : std_logic;
@@ -438,7 +438,7 @@ begin
 
 
 
-    I_AXI_INTERFACE_CONVERTER_L : entity xil_defaultlib.axi_interface_converter
+    I_CORE_CONVERTER_L : entity xil_defaultlib.core_converter
         generic map (
             C_M_AXI_BURST_LEN    => C_M_AXI_BURST_LEN,
             C_M_AXI_ID_WIDTH     => C_M_AXI_ID_WIDTH,
@@ -533,7 +533,7 @@ begin
             );
 
 
-    I_AXI_INTERFACE_CONVERTER_R : entity xil_defaultlib.axi_interface_converter
+    I_CORE_CONVERTER_R : entity xil_defaultlib.core_converter
         generic map (
             C_M_AXI_BURST_LEN    => C_M_AXI_BURST_LEN,
             C_M_AXI_ID_WIDTH     => C_M_AXI_ID_WIDTH,

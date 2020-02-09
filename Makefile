@@ -18,37 +18,37 @@ SCRIPTSDIR=scripts
 ##############################
 # All the targets
 ##############################
-all_sims : axi_if_conv_sim axi_lite_master_sim axi_lite_regs_sim core_fsm_sim input_buffer_sim pattern_counter_sim top_sim
+all_sims : core_conv_sim axi_lite_master_sim axi_lite_regs_sim core_fsm_sim input_buffer_sim pattern_counter_sim top_sim
 
-all_elabs: axi_if_conv_elab axi_lite_master_elab axi_lite_regs_elab core_fsm_elab input_buffer_elab pattern_counter_elab misc_elab top_elab
+all_elabs: core_conv_elab axi_lite_master_elab axi_lite_regs_elab core_fsm_elab input_buffer_elab pattern_counter_elab misc_elab top_elab
 
 
 ##############################
 # Top
 ##############################
 top_sim : global_sim top_elab
-	$(GHDL) -a $(GHDLFLAGS) src/axi_if_conv/tb/s_axi_model.vhd
-	$(GHDL) -a $(GHDLFLAGS) $(UNISIMFLAGS) src/top/tb/tb_top.vhd
-	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -r tb_top $(WAVES)/tb_top.vcd
+	$(GHDL) -a $(GHDLFLAGS) src/core_conv/tb/s_axi_model.vhd
+	$(GHDL) -a $(GHDLFLAGS) $(UNISIMFLAGS) src/top/tb/tb_axi_if_converter.vhd
+	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -r tb_axi_if_converter $(WAVES)/tb_top.vcd
 
-top_elab : axi_if_conv_src axi_lite_master_src axi_lite_regs_src core_fsm_src input_buffer_src pattern_counter_src misc_src
-	$(GHDL) -a $(GHDLFLAGS) $(UNISIMFLAGS) src/top/rtl/top.vhd
-	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -e top
+top_elab : core_conv_src axi_lite_master_src axi_lite_regs_src core_fsm_src input_buffer_src pattern_counter_src misc_src
+	$(GHDL) -a $(GHDLFLAGS) $(UNISIMFLAGS) src/top/rtl/axi_if_converter.vhd
+	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -e axi_if_converter
 
 
 ##############################
 # AXI Interface Converter
 ##############################
-axi_if_conv_sim:  global_sim axi_if_conv_elab
-	$(GHDL) -a $(GHDLFLAGS) src/axi_if_conv/tb/s_axi_model.vhd
-	$(GHDL) -a $(GHDLFLAGS) src/axi_if_conv/tb/tb_axi_interface_converter.vhd
-	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -r tb_axi_interface_converter $(WAVES)/tb_axi_if_conf.vcd
+core_conv_sim:  global_sim core_conv_elab
+	$(GHDL) -a $(GHDLFLAGS) src/core_conv/tb/s_axi_model.vhd
+	$(GHDL) -a $(GHDLFLAGS) src/core_conv/tb/tb_core_converter.vhd
+	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -r tb_core_converter $(WAVES)/tb_axi_if_conf.vcd
 
-axi_if_conv_elab: axi_if_conv_src
-	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -e axi_interface_converter
+core_conv_elab: core_conv_src
+	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -e core_converter
 
-axi_if_conv_src: global_pkg
-	$(GHDL) -a $(GHDLFLAGS) src/axi_if_conv/rtl/axi_interface_converter.vhd
+core_conv_src: global_pkg
+	$(GHDL) -a $(GHDLFLAGS) src/core_conv/rtl/core_converter.vhd
 
 
 ##############################
@@ -144,7 +144,7 @@ misc_src:
 global_sim : global_pkg
 	$(GHDL) -a $(GHDLFLAGS) src/axi_lite_regs/tb/axil_slave_bfm.vhd
 	$(GHDL) -a $(GHDLFLAGS) src/axi_lite_master/tb/axil_master_bfm.vhd
-	$(GHDL) -a $(GHDLFLAGS) src/axi_if_conv/tb/axif_master_bfm.vhd
+	$(GHDL) -a $(GHDLFLAGS) src/core_conv/tb/axif_master_bfm.vhd
 	$(GHDL) -a $(GHDLFLAGS) src/top/tb/global_sim.vhd
 
 global_pkg:

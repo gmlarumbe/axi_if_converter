@@ -7,11 +7,11 @@ use xil_defaultlib.global.all;
 use xil_defaultlib.global_sim.all;
 
 
-entity tb_axi_interface_converter is
-end entity tb_axi_interface_converter;
+entity tb_core_converter is
+end entity tb_core_converter;
 
 
-architecture TB of tb_axi_interface_converter is
+architecture TB of tb_core_converter is
 
     -- Seeds for random data generation
     constant SEED1_VALUE : integer := 1;
@@ -135,7 +135,7 @@ begin
 
 
     -- Instances
-    DUT : entity xil_defaultlib.axi_interface_converter
+    DUT : entity xil_defaultlib.core_converter
         generic map (
             C_M_AXI_BURST_LEN    => C_M_AXI_BURST_LEN,
             C_M_AXI_ID_WIDTH     => C_M_AXI_ID_WIDTH,

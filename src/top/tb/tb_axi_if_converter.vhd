@@ -10,12 +10,12 @@ use xil_defaultlib.axif_master_bfm.all;
 
 ------------------------------------------------------------------------------------------------------------------------
 
-entity tb_top is
-end entity tb_top;
+entity tb_axi_if_converter is
+end entity tb_axi_if_converter;
 
 ------------------------------------------------------------------------------------------------------------------------
 
-architecture TB of tb_top is
+architecture TB of tb_axi_if_converter is
 
     constant C_S_AXI_DATA_WIDTH : integer := 32;
     constant C_S_AXI_ADDR_WIDTH : integer := 7;
@@ -212,7 +212,7 @@ architecture TB of tb_top is
 begin
 
     -- component instantiation
-    DUT : entity xil_defaultlib.top
+    DUT : entity xil_defaultlib.axi_if_converter
         port map (
             clk        => clk,
             resetn     => resetn,
