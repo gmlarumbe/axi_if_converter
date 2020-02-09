@@ -7,6 +7,7 @@ GHDLRUNFLAGS=
 
 WORKDIR=library/xil_defaultlib
 UNISIMDIR=library
+VIVADO_BIN=/opt/Xilinx/Vivado/2018.3/bin/vivado
 VIVADO_LIB=vivado/data/vhdl/src/
 GHDL_DIR=/usr/local/lib/ghdl
 WAVES_DIR=waves
@@ -181,3 +182,18 @@ unisim_clean :
 unisim_recompile : unisim_clean unisim
 	echo "Recompiling UNISIM library @ $UNISIMDIR..."
 
+
+###########################
+## Vivado
+##########################
+vivado_syn : 
+	test -d vivado/axi_if_converter && $(VIVADO_BIN) vivado/axi_if_converter/axi_if_converter.xpr -mode tcl -source vivado/elaborate.tcl
+
+vivado_proj : vivado_check
+	cd vivado && $(VIVADO_BIN) -mode tcl -source axi_if_converter.tcl
+
+vivado_clean : 
+	rm -rf vivado/axi_if_converter
+
+vivado_check:
+	$(SCRIPTSDIR)/check_vivado.sh
