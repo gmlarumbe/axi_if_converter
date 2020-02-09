@@ -331,8 +331,8 @@ begin
     --------------------
     -- Undriven Signals --
     --------------------
-    s_axis_lch_tready <= '0';
-    s_axis_rch_tready <= '0';
+    s_axis_lch_tready <= '1';
+    s_axis_rch_tready <= '1';
     m_axis_lch_tkeep  <= (others => '0');
     m_axis_lch_tlast  <= '0';
     m_axis_rch_tkeep  <= (others => '0');

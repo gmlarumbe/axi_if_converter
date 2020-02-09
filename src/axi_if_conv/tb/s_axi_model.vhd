@@ -365,7 +365,9 @@ begin
             byte_ram_proc : process(S_AXI_ACLK) is
             begin
                 if (rising_edge (S_AXI_ACLK)) then
-                    if (mem_wren = '1' and S_AXI_WSTRB(mem_byte_index) = '1') then
+                    if (S_AXI_ARESETN = '0') then
+                        byte_ram(to_integer(unsigned(mem_address))) <= (others => '1');
+                    elsif (mem_wren = '1' and S_AXI_WSTRB(mem_byte_index) = '1') then
                         byte_ram(to_integer(unsigned(mem_address))) <= data_in;
                     end if;
                 end if;
@@ -374,7 +376,9 @@ begin
             process(S_AXI_ACLK) is
             begin
                 if (rising_edge (S_AXI_ACLK)) then
-                    if (mem_rden = '1') then
+                    if (S_AXI_ARESETN = '0') then
+                        mem_data_out(i)((mem_byte_index*8+7) downto mem_byte_index*8) <= (others => '1');
+                    elsif (mem_rden = '1') then
                         mem_data_out(i)((mem_byte_index*8+7) downto mem_byte_index*8) <= data_out;
                     end if;
                 end if;

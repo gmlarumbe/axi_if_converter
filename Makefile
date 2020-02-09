@@ -27,6 +27,7 @@ all_elabs: axi_if_conv_elab axi_lite_master_elab axi_lite_regs_elab core_fsm_ela
 # Top
 ##############################
 top_sim : global_sim top_elab
+	$(GHDL) -a $(GHDLFLAGS) src/axi_if_conv/tb/s_axi_model.vhd
 	$(GHDL) -a $(GHDLFLAGS) $(UNISIMFLAGS) src/top/tb/tb_top.vhd
 	$(GHDL) -c $(GHDLFLAGS) $(UNISIMFLAGS) -r tb_top $(WAVES)/tb_top.vcd
 
@@ -142,6 +143,8 @@ misc_src:
 ###########################
 global_sim : global_pkg
 	$(GHDL) -a $(GHDLFLAGS) src/axi_lite_regs/tb/axil_slave_bfm.vhd
+	$(GHDL) -a $(GHDLFLAGS) src/axi_lite_master/tb/axil_master_bfm.vhd
+	$(GHDL) -a $(GHDLFLAGS) src/axi_if_conv/tb/axif_master_bfm.vhd
 	$(GHDL) -a $(GHDLFLAGS) src/top/tb/global_sim.vhd
 
 global_pkg:

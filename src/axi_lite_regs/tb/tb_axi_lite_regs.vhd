@@ -164,23 +164,6 @@ begin
         end init_values;
 
 
-        procedure master_read_request is
-        begin
-            write_master_lite_wr_add_reg(common_in_w, common_out_w, x"0000_FFF0");
-            write_master_lite_wr_data_reg(common_in_w, common_out_w, x"BEBA_CAFE");
-            write_master_lite_wr_setup_reg(common_in_w, common_out_w, x"0000_0001");
-            wait for (5*AXI_CLK_T);
-        end master_read_request;
-
-
-        procedure master_write_request is
-        begin
-            write_master_lite_rd_add_reg(common_in_w, common_out_w, x"0000_FFF0");
-            write_master_lite_rd_setup_reg(common_in_w, common_out_w, x"0000_0001");
-            wait for (5*AXI_CLK_T);
-        end master_write_request;
-
-
         procedure errors_status_reg is
         begin
             -- Read status reg
@@ -220,8 +203,8 @@ begin
         write_control_reg_system_stop(common_in_w, common_out_w);
         write_control_reg_soft_reset(common_in_w, common_out_w);
         wait until soft_reset = '0';
-        master_read_request;
-        master_write_request;
+        write_master_lite_write_request(common_in_w, common_out_w, x"0000_ADD0", x"BEBA_CAFE");
+        write_master_lite_read_request(common_in_w, common_out_w, x"0000_ADD0");
         errors_status_reg;
         system_running_status_reg;
         write_converter_setup_reg(common_in_w, common_out_w, x"0000_0000");  -- Setup as S2MM

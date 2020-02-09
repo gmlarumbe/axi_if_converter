@@ -548,8 +548,8 @@ begin
                 read_size_l <= (others => '0');
                 read_size_r <= (others => '0');
             else
-                add_bit(conv_op_lch, BIT_CONV_OP_L);
-                add_bit(conv_op_rch, BIT_CONV_OP_R);
+                add_bit(BIT_CONV_OP_L, conv_op_lch);
+                add_bit(BIT_CONV_OP_R, conv_op_rch);
                 read_size_l <= unsigned(mm2s_size_reg(15 downto 0));
                 read_size_r <= unsigned(mm2s_size_reg(31 downto 16));
             end if;

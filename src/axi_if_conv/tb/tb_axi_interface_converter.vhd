@@ -17,17 +17,6 @@ architecture TB of tb_axi_interface_converter is
     constant SEED1_VALUE : integer := 1;
     constant SEED2_VALUE : integer := 999;
 
-    -- DUT parameters
-    constant C_M_AXI_BURST_LEN    : integer := 32;
-    constant C_M_AXI_ID_WIDTH     : integer := 1;
-    constant C_M_AXI_ADDR_WIDTH   : integer := 32;
-    constant C_M_AXI_DATA_WIDTH   : integer := 64;
-    constant C_M_AXI_AWUSER_WIDTH : integer := 0;
-    constant C_M_AXI_ARUSER_WIDTH : integer := 0;
-    constant C_M_AXI_WUSER_WIDTH  : integer := 0;
-    constant C_M_AXI_RUSER_WIDTH  : integer := 0;
-    constant C_M_AXI_BUSER_WIDTH  : integer := 0;
-
     -- DUT signals
     signal soft_reset : std_logic;
     signal conv_req   : conversion_req_t;
