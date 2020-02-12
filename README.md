@@ -2,78 +2,90 @@
 
 ## Overview ##
 
-AXI Interface Converter with 2 independent channels (left/right).
+The IP implements an AXI Interface Converter with 2 independent processing channels, left and right. It is written in VHDL-2008.
 
-Can convert from AXI-Stream to AXI-MM and viceversa.
-
-Implements an AXI-Lite register interface for control and status monitoring.
-It also includes an AXI-Lite master interface managed by mentioned registers.
-
-There are also some pattern counters to check validity of input data.
-
+ * It can convert from AXI-Stream to AXI-MM and viceversa.
+ * Implements an AXI-Lite register interface for control and status monitoring.
+ * Includes an AXI-Lite master read/write interface.
+ * Instantiates pattern counters that check validity of input stream data.
 
 
 ## Requirements ##
 
+The project makes use of Makefiles to build targets for setup, elaboration, simulation and synthesis.
+
 ### GHDL ###
 
-Some submodules implement Xilinx IP/primitives and therefore UNISIMS library needs to be compiled.
-Libraries source and a script are provided and it is only necessary to build corresponding target to compile them:
+GHDL simulations are provided as some versions of Vivado do not support some VHDL-08 constructs for simulation.
 
-	$ make unisim
+Some submodules implement Xilinx IP and primitives. The *unisim* Xilinx simulation library can be compiled executing the following target:
 
-To create the necessary folders for waves and worklib:
+    $ make unisim
 
-	$ make setup
-	
-And finally execute desired target:
+To create the folders for waves and work library:
 
-	$ make top_elab
-	$ ...
-	$ make axi_if_conv_sim
-	$ ...
+    $ make setup
+
+
+### Vivado ###
+
+Synthesis has been tested with Xilinx Vivado 2018.3.
+
+Some scripts expect its installation folder to be at */opt/Xilinx/* if project creation for synthesis targets are being run.
+
+
+## Elaboration, simulation and synthesis ##
+
+To elaborate/simulate all the submodules and hierarchy top module:
+
+    $ make all_elabs
+    $ make all_sims
+
+To elaborate/simulate an standalone submodule:
+
+    $ make axi_lite_regs_elab
+    $ make axi_lite_regs_sim
 
 Waves will be created at the *waves* folder.
 
+To synthesize the IP first a Vivado project needs to be created. To recreate it a TCL is provided. To run its target:
 
-## Notes ##
+    $ make vivado_proj
 
-Code is written in VHDL-2008 IEEE standard.
+To synthesize the IP:
 
-The IP has been tested with GHDL and Vivado 2018.3.
-
-For build with GHDL there is a Makefile to build/simulate top hierarchy as well as each submodule independently.
-
-For build with Vivado a TCL is provided to regenerate the project.
-
+    $ make vivado_syn
 
 
 ### Known Issues ###
 
-#### VHDL FIFO Behavioral model ####
+#### VHDL FIFO simulation model ####
 
-Since behavioral model of this IP is only provided in Verilog, GHDL requires
-a netlist to be compiled and exported in VHDL.
+Since behavioral model of this IP is only provided in Verilog by Xilinx,
+GHDL requires that a VHDL netlist is compiled and exported.
 
-In Vivado, set blk_mem_gen as the top module, synthesize, open synthesized design and use
-the *write_vhdl* tcl command:
+In Vivado, set *blk_mem_gen* as the top module, synthesize, open synthesized design and use the *write_vhdl* tcl command:
 
-	$ write_vhdl ./blk_mem_gen_0_netlist.vhd
-	
-This netlist will also require the UNISIM library to be compiled to simulate properly.
+    $ write_vhdl ./blk_mem_gen_0_netlist.vhd
 
-Resources for unisims compilation explanation:
- * https://github.com/ghdl/ghdl/issues/716
+This netlist requires the *unisim* simulation library to be compiled.
 
 
-#### GHDL switches ####
+#### GHDL compilation switches ####
 
-There are two issues with the UNISIM library that require the switches
-*-frelaxed-whatever* and *--ieee=synopsys* to be enabled for elaboration/simulation.
+There are some issues with the *unisim* library that require some GHDL compilation switches to be enabled for elaboration and simulation:
 
-  * --ieee==synopsys: necessary to use non ieee standard libraries present in unisim components.
-  * -frelaxed-rules: necessary to avoid strict checks of the VHDL-2008 LRM.
-  
-Resources for required makefile switches explanation:
+  * --ieee==synopsys: use non ieee standard libraries present in unisim components.
+  * -frelaxed-rules: avoid strict checks of the VHDL-2008 LRM.
+
+
+#### Resources ####
+
+Makefile switches discussions:
+
   * https://github.com/ghdl/ghdl/issues/594
   * https://github.com/ghdl/ghdl/issues/559
+
+*unisim* compilation discussion:
+
+ * https://github.com/ghdl/ghdl/issues/716
