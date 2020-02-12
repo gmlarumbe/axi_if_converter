@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Interface Converter
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : axi_if_converter.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library ieee;
 library xil_defaultlib;
 use ieee.std_logic_1164.all;
@@ -166,22 +187,22 @@ entity axi_if_converter is
         -- Axi lite master auxiliary interface (configuration parameters)
         m_axi_conf_aclk    : in  std_logic;
         m_axi_conf_aresetn : in  std_logic;
-        m_axi_conf_awaddr  : out std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+        m_axi_conf_awaddr  : out std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
         m_axi_conf_awprot  : out std_logic_vector(2 downto 0);
         m_axi_conf_awvalid : out std_logic;
         m_axi_conf_awready : in  std_logic;
-        m_axi_conf_wdata   : out std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
-        m_axi_conf_wstrb   : out std_logic_vector(C_M_MEM_AXI_DATA_WIDTH/8-1 downto 0);
+        m_axi_conf_wdata   : out std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
+        m_axi_conf_wstrb   : out std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH/8-1 downto 0);
         m_axi_conf_wvalid  : out std_logic;
         m_axi_conf_wready  : in  std_logic;
         m_axi_conf_bresp   : in  std_logic_vector(1 downto 0);
         m_axi_conf_bvalid  : in  std_logic;
         m_axi_conf_bready  : out std_logic;
-        m_axi_conf_araddr  : out std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+        m_axi_conf_araddr  : out std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
         m_axi_conf_arprot  : out std_logic_vector(2 downto 0);
         m_axi_conf_arvalid : out std_logic;
         m_axi_conf_arready : in  std_logic;
-        m_axi_conf_rdata   : in  std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
+        m_axi_conf_rdata   : in  std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
         m_axi_conf_rresp   : in  std_logic_vector(1 downto 0);
         m_axi_conf_rvalid  : in  std_logic;
         m_axi_conf_rready  : out std_logic
@@ -631,9 +652,9 @@ begin
 
     I_AXI_LITE_MASTER : entity xil_defaultlib.axi_lite_master
         generic map (
-            C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR => C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR,
-            C_M_MEM_AXI_ADDR_WIDTH             => C_M_MEM_AXI_ADDR_WIDTH,
-            C_M_MEM_AXI_DATA_WIDTH             => C_M_MEM_AXI_DATA_WIDTH
+            C_M_AXIL_MASTER_TARGET_BASE_ADDR => C_M_AXIL_MASTER_TARGET_BASE_ADDR,
+            C_M_AXIL_MASTER_ADDR_WIDTH       => C_M_AXIL_MASTER_ADDR_WIDTH,
+            C_M_AXIL_MASTER_DATA_WIDTH       => C_M_AXIL_MASTER_DATA_WIDTH
             )
         port map (
             soft_reset        => soft_reset,

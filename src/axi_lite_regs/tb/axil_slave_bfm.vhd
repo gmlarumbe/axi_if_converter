@@ -1,6 +1,27 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Lite Slave BFM
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : axil_slave_bfm.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library IEEE;
 library xil_defaultlib;
-use IEEE.std_logic_1164.ALL;
+use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 package axil_slave_bfm is
@@ -65,7 +86,7 @@ end package axil_slave_bfm;
 
 library IEEE;
 library xil_defaultlib;
-use IEEE.std_logic_1164.ALL;
+use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 package body axil_slave_bfm is
@@ -89,9 +110,9 @@ package body axil_slave_bfm is
         axi_out.s_axi_awvalid <= '0';
         axi_out.s_axi_wvalid  <= '0';
         wait until rising_edge(axi_in.s_axi_aclk);
-        axi_out.s_axi_bready <= '1';
+        axi_out.s_axi_bready  <= '1';
         wait until (axi_in.s_axi_bvalid = '0');
-        axi_out.s_axi_bready <= '0';
+        axi_out.s_axi_bready  <= '0';
         wait until rising_edge(axi_in.s_axi_aclk);
     end slave_write_sim;
 

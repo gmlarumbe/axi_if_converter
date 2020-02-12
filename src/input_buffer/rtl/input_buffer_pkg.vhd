@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : Input Buffer Package
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : input_buffer_pkg.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library IEEE;
 library xil_defaultlib;
 use IEEE.std_logic_1164.all;

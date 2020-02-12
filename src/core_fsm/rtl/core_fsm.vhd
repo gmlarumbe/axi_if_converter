@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : Core FSM
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : core_fsm.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library xil_defaultlib;
 library IEEE;
 use IEEE.std_logic_1164.all;
@@ -39,10 +60,10 @@ architecture RTL of core_fsm is
         REQ_MM2S,
         WAIT_MM2S
         );
-    signal state       : fsm_states;
+    signal state : fsm_states;
 
-    signal s2mm_write_ptr : std_logic_vector(31 downto 0);
-    signal mm2s_read_ptr  : std_logic_vector(31 downto 0);
+    signal s2mm_write_ptr      : std_logic_vector(31 downto 0);
+    signal mm2s_read_ptr       : std_logic_vector(31 downto 0);
     signal s2mm_write_req_size : unsigned(9 downto 0);
     signal mm2s_read_req_size  : unsigned(9 downto 0);
 

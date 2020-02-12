@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Interface Converter Testbench
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : tb_axi_if_converter.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -173,22 +194,22 @@ architecture TB of tb_axi_if_converter is
 
     signal m_axi_conf_aclk    : std_logic;
     signal m_axi_conf_aresetn : std_logic;
-    signal m_axi_conf_awaddr  : std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+    signal m_axi_conf_awaddr  : std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
     signal m_axi_conf_awprot  : std_logic_vector(2 downto 0);
     signal m_axi_conf_awvalid : std_logic;
     signal m_axi_conf_awready : std_logic;
-    signal m_axi_conf_wdata   : std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
-    signal m_axi_conf_wstrb   : std_logic_vector(C_M_MEM_AXI_DATA_WIDTH/8-1 downto 0);
+    signal m_axi_conf_wdata   : std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
+    signal m_axi_conf_wstrb   : std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH/8-1 downto 0);
     signal m_axi_conf_wvalid  : std_logic;
     signal m_axi_conf_wready  : std_logic;
     signal m_axi_conf_bresp   : std_logic_vector(1 downto 0);
     signal m_axi_conf_bvalid  : std_logic;
     signal m_axi_conf_bready  : std_logic;
-    signal m_axi_conf_araddr  : std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+    signal m_axi_conf_araddr  : std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
     signal m_axi_conf_arprot  : std_logic_vector(2 downto 0);
     signal m_axi_conf_arvalid : std_logic;
     signal m_axi_conf_arready : std_logic;
-    signal m_axi_conf_rdata   : std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
+    signal m_axi_conf_rdata   : std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
     signal m_axi_conf_rresp   : std_logic_vector(1 downto 0);
     signal m_axi_conf_rvalid  : std_logic;
     signal m_axi_conf_rready  : std_logic;
@@ -502,8 +523,8 @@ begin
     s_axis_rch_aclk <= clk;
     m_axi_lch_aclk  <= clk;
     m_axi_rch_aclk  <= clk;
-    m_axis_lch_aclk  <= clk;
-    m_axis_rch_aclk  <= clk;
+    m_axis_lch_aclk <= clk;
+    m_axis_rch_aclk <= clk;
 
     s_axi_aresetn      <= resetn;
     m_axi_conf_aresetn <= resetn;
@@ -511,8 +532,8 @@ begin
     s_axis_rch_aresetn <= resetn;
     m_axi_lch_aresetn  <= resetn;
     m_axi_rch_aresetn  <= resetn;
-    m_axis_lch_aresetn  <= resetn;
-    m_axis_rch_aresetn  <= resetn;
+    m_axis_lch_aresetn <= resetn;
+    m_axis_rch_aresetn <= resetn;
 
     -- BFM signal connections
     s_bfm_in_r                                                                                        <= (s_axi_aclk, s_axi_arready, s_axi_rready, s_axi_rvalid);

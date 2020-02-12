@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Lite Master Testbench
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : tb_axi_lite_master.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -14,11 +35,9 @@ end entity tb_axi_lite_master;
 
 architecture TB of tb_axi_lite_master is
 
-
-    constant C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR : std_logic_vector := x"0000_0000";
-    constant C_M_MEM_AXI_ADDR_WIDTH             : integer          := 32;
-    constant C_M_MEM_AXI_DATA_WIDTH             : integer          := 32;
-
+    constant C_M_AXIL_MASTER_TARGET_BASE_ADDR : std_logic_vector := x"0000_0000";
+    constant C_M_AXIL_MASTER_ADDR_WIDTH       : integer          := 32;
+    constant C_M_AXIL_MASTER_DATA_WIDTH       : integer          := 32;
 
     signal soft_reset        : std_logic := '0';
     signal transaction_error : std_logic;
@@ -35,22 +54,22 @@ architecture TB of tb_axi_lite_master is
 
     signal m_axi_aclk    : std_logic := '1';
     signal m_axi_aresetn : std_logic;
-    signal m_axi_awaddr  : std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+    signal m_axi_awaddr  : std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
     signal m_axi_awprot  : std_logic_vector(2 downto 0);
     signal m_axi_awvalid : std_logic;
     signal m_axi_awready : std_logic;
-    signal m_axi_wdata   : std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
-    signal m_axi_wstrb   : std_logic_vector(C_M_MEM_AXI_DATA_WIDTH/8-1 downto 0);
+    signal m_axi_wdata   : std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
+    signal m_axi_wstrb   : std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH/8-1 downto 0);
     signal m_axi_wvalid  : std_logic;
     signal m_axi_wready  : std_logic;
     signal m_axi_bresp   : std_logic_vector(1 downto 0);
     signal m_axi_bvalid  : std_logic;
     signal m_axi_bready  : std_logic;
-    signal m_axi_araddr  : std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+    signal m_axi_araddr  : std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
     signal m_axi_arprot  : std_logic_vector(2 downto 0);
     signal m_axi_arvalid : std_logic;
     signal m_axi_arready : std_logic;
-    signal m_axi_rdata   : std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
+    signal m_axi_rdata   : std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
     signal m_axi_rresp   : std_logic_vector(1 downto 0);
     signal m_axi_rvalid  : std_logic;
     signal m_axi_rready  : std_logic;
@@ -71,9 +90,9 @@ begin
     -- Instantiation
     DUT : entity xil_defaultlib.axi_lite_master
         generic map (
-            C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR => C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR,
-            C_M_MEM_AXI_ADDR_WIDTH             => C_M_MEM_AXI_ADDR_WIDTH,
-            C_M_MEM_AXI_DATA_WIDTH             => C_M_MEM_AXI_DATA_WIDTH
+            C_M_AXIL_MASTER_TARGET_BASE_ADDR => C_M_AXIL_MASTER_TARGET_BASE_ADDR,
+            C_M_AXIL_MASTER_ADDR_WIDTH       => C_M_AXIL_MASTER_ADDR_WIDTH,
+            C_M_AXIL_MASTER_DATA_WIDTH       => C_M_AXIL_MASTER_DATA_WIDTH
             )
         port map (
             soft_reset        => soft_reset,

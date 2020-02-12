@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : Slave AXI full Memory Model
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : s_axi_model.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -97,8 +118,8 @@ architecture RTL of s_axi_model is
     signal axi_arlen        : std_logic_vector(8-1 downto 0);
     signal axi_awlen        : std_logic_vector(8-1 downto 0);
 
-    signal mem_address : std_logic_vector(OPT_MEM_ADDR_BITS downto 0);
-    signal mem_select  : std_logic_vector(USER_NUM_MEM-1 downto 0);
+    signal mem_address  : std_logic_vector(OPT_MEM_ADDR_BITS downto 0);
+    signal mem_select   : std_logic_vector(USER_NUM_MEM-1 downto 0);
     type word_array is array (0 to USER_NUM_MEM-1) of std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
     signal mem_data_out : word_array;
 
@@ -123,10 +144,10 @@ begin
     S_AXI_RVALID  <= axi_rvalid;
     S_AXI_RID     <= s_axi_arid;
 
-    aw_wrap_size  <= ((C_S_AXI_DATA_WIDTH)/8 * to_integer(unsigned(axi_awlen)));
-    ar_wrap_size  <= ((C_S_AXI_DATA_WIDTH)/8 * to_integer(unsigned(axi_arlen)));
-    aw_wrap_en    <= '1' when (((axi_awaddr and std_logic_vector(to_unsigned(aw_wrap_size, C_S_AXI_ADDR_WIDTH))) xor std_logic_vector(to_unsigned(aw_wrap_size, C_S_AXI_ADDR_WIDTH))) = LOW) else '0';
-    ar_wrap_en    <= '1' when (((axi_araddr and std_logic_vector(to_unsigned(ar_wrap_size, C_S_AXI_ADDR_WIDTH))) xor std_logic_vector(to_unsigned(ar_wrap_size, C_S_AXI_ADDR_WIDTH))) = LOW) else '0';
+    aw_wrap_size <= ((C_S_AXI_DATA_WIDTH)/8 * to_integer(unsigned(axi_awlen)));
+    ar_wrap_size <= ((C_S_AXI_DATA_WIDTH)/8 * to_integer(unsigned(axi_arlen)));
+    aw_wrap_en   <= '1' when (((axi_awaddr and std_logic_vector(to_unsigned(aw_wrap_size, C_S_AXI_ADDR_WIDTH))) xor std_logic_vector(to_unsigned(aw_wrap_size, C_S_AXI_ADDR_WIDTH))) = LOW) else '0';
+    ar_wrap_en   <= '1' when (((axi_araddr and std_logic_vector(to_unsigned(ar_wrap_size, C_S_AXI_ADDR_WIDTH))) xor std_logic_vector(to_unsigned(ar_wrap_size, C_S_AXI_ADDR_WIDTH))) = LOW) else '0';
 
     -- axi_awready is asserted for one S_AXI_ACLK clock cycle when both
     -- S_AXI_AWVALID and S_AXI_WVALID are asserted. axi_awready is

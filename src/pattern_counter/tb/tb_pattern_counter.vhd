@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : Pattern Counters Testbench
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : tb_pattern_counter.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library IEEE;
 library xil_defaultlib;
 use IEEE.std_logic_1164.all;
@@ -60,7 +81,7 @@ begin
         variable seed2 : integer := SEED2_VALUE;
 
         impure function rand_slv(len : integer) return std_logic_vector is
-            variable r : real;
+            variable r   : real;
             variable slv : std_logic_vector(len - 1 downto 0);
         begin
             for i in slv'range loop
@@ -74,7 +95,7 @@ begin
         begin
             axis_tvalid <= '1';
             for i in 1 to DATA_ITERATIONS loop
-                axis_tdata  <= rand_slv(DATA_WIDTH);
+                axis_tdata <= rand_slv(DATA_WIDTH);
                 wait for (AXI_CLK_T);
             end loop;
             axis_tvalid <= '0';

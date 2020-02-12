@@ -1,6 +1,27 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Lite Master BFM
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : axil_master_bfm.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library IEEE;
 library xil_defaultlib;
-use IEEE.std_logic_1164.ALL;
+use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 package axil_master_bfm is
@@ -24,8 +45,8 @@ package axil_master_bfm is
 
 
     procedure master_write_sim(
-        signal common_in        : in  m_common_response_w_type_in;
-        signal common_out       : out m_common_response_w_type_out
+        signal common_in  : in  m_common_response_w_type_in;
+        signal common_out : out m_common_response_w_type_out
         );
 
     ----------------
@@ -59,8 +80,8 @@ package body axil_master_bfm is
     -- Write --
     -----------
     procedure master_write_sim (
-        signal common_in        : in  m_common_response_w_type_in;
-        signal common_out       : out m_common_response_w_type_out
+        signal common_in  : in  m_common_response_w_type_in;
+        signal common_out : out m_common_response_w_type_out
         ) is
     begin
         wait until (rising_edge(common_in.m_axi_aclk) and common_in.m_axi_awvalid = '1' and common_in.m_axi_wvalid = '1');

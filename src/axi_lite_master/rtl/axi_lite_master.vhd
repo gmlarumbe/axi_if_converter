@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Lite Master
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : axi_lite_master.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library ieee;
 library xil_defaultlib;
 use ieee.std_logic_1164.all;
@@ -5,9 +26,9 @@ use ieee.numeric_std.all;
 
 entity axi_lite_master is
     generic (
-        C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR : std_logic_vector := x"0000_0000";
-        C_M_MEM_AXI_ADDR_WIDTH             : integer          := 32;
-        C_M_MEM_AXI_DATA_WIDTH             : integer          := 32
+        C_M_AXIL_MASTER_TARGET_BASE_ADDR : std_logic_vector := x"0000_0000";
+        C_M_AXIL_MASTER_ADDR_WIDTH       : integer          := 32;
+        C_M_AXIL_MASTER_DATA_WIDTH       : integer          := 32
         );
     port (
         soft_reset        : in  std_logic;
@@ -25,22 +46,22 @@ entity axi_lite_master is
 
         m_axi_aclk    : in  std_logic;
         m_axi_aresetn : in  std_logic;
-        m_axi_awaddr  : out std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+        m_axi_awaddr  : out std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
         m_axi_awprot  : out std_logic_vector(2 downto 0);
         m_axi_awvalid : out std_logic;
         m_axi_awready : in  std_logic;
-        m_axi_wdata   : out std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
-        m_axi_wstrb   : out std_logic_vector(C_M_MEM_AXI_DATA_WIDTH/8-1 downto 0);
+        m_axi_wdata   : out std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
+        m_axi_wstrb   : out std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH/8-1 downto 0);
         m_axi_wvalid  : out std_logic;
         m_axi_wready  : in  std_logic;
         m_axi_bresp   : in  std_logic_vector(1 downto 0);
         m_axi_bvalid  : in  std_logic;
         m_axi_bready  : out std_logic;
-        m_axi_araddr  : out std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+        m_axi_araddr  : out std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
         m_axi_arprot  : out std_logic_vector(2 downto 0);
         m_axi_arvalid : out std_logic;
         m_axi_arready : in  std_logic;
-        m_axi_rdata   : in  std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
+        m_axi_rdata   : in  std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
         m_axi_rresp   : in  std_logic_vector(1 downto 0);
         m_axi_rvalid  : in  std_logic;
         m_axi_rready  : out std_logic
@@ -55,9 +76,9 @@ architecture RTL of axi_lite_master is
     signal axi_arvalid : std_logic;
     signal axi_rready  : std_logic;
     signal axi_bready  : std_logic;
-    signal axi_awaddr  : std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
-    signal axi_wdata   : std_logic_vector(C_M_MEM_AXI_DATA_WIDTH-1 downto 0);
-    signal axi_araddr  : std_logic_vector(C_M_MEM_AXI_ADDR_WIDTH-1 downto 0);
+    signal axi_awaddr  : std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
+    signal axi_wdata   : std_logic_vector(C_M_AXIL_MASTER_DATA_WIDTH-1 downto 0);
+    signal axi_araddr  : std_logic_vector(C_M_AXIL_MASTER_ADDR_WIDTH-1 downto 0);
 
     signal write_resp_error : std_logic;
     signal read_resp_error  : std_logic;
@@ -68,20 +89,20 @@ architecture RTL of axi_lite_master is
 
 begin
 
-    m_axi_awaddr  <= std_logic_vector (unsigned(C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR) + unsigned(axi_awaddr));
+    m_axi_awaddr  <= std_logic_vector (unsigned(C_M_AXIL_MASTER_TARGET_BASE_ADDR) + unsigned(axi_awaddr));
     m_axi_wdata   <= axi_wdata;
     m_axi_awvalid <= axi_awvalid;
     m_axi_wvalid  <= axi_wvalid;
     m_axi_bready  <= axi_bready;
-    m_axi_araddr  <= std_logic_vector(unsigned(C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR) + unsigned(axi_araddr));
+    m_axi_araddr  <= std_logic_vector(unsigned(C_M_AXIL_MASTER_TARGET_BASE_ADDR) + unsigned(axi_araddr));
     m_axi_rready  <= axi_rready;
     m_axi_arvalid <= axi_arvalid;
     m_axi_awprot  <= "000";
     m_axi_wstrb   <= "1111";
     m_axi_arprot  <= "001";
 
-    read_data <= m_axi_rdata when (m_axi_rvalid = '1' and axi_rready = '1')
-                 else (others => '0');
+    read_data <= m_axi_rdata when (m_axi_rvalid = '1' and axi_rready = '1') else
+                 (others => '0');
     read_data_valid <= axi_rready and m_axi_rvalid;
     write_done      <= axi_bready and m_axi_bvalid;
 

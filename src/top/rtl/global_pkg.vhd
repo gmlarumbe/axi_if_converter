@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Interface Converter Package
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : global_pkg.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -41,14 +62,14 @@ package global is
     constant C_M_AXI_BUSER_WIDTH  : integer := 0;
 
     -- AXI Lite master
-    constant C_M_MEM_AXI_TARGET_SLAVE_BASE_ADDR : std_logic_vector := x"0000_0000";
-    constant C_M_MEM_AXI_ADDR_WIDTH             : integer          := 32;
-    constant C_M_MEM_AXI_DATA_WIDTH             : integer          := 32;
+    constant C_M_AXIL_MASTER_TARGET_BASE_ADDR : std_logic_vector := x"0000_0000";
+    constant C_M_AXIL_MASTER_ADDR_WIDTH             : integer          := 32;
+    constant C_M_AXIL_MASTER_DATA_WIDTH             : integer          := 32;
 
     -- Pattern counters
     constant PATTERN_COUNTER_DATA_WIDTH : integer := 64;
     constant PATTERN : std_logic_vector(PATTERN_COUNTER_DATA_WIDTH-1 downto 0) := (others => '0');
-    
+
     -- Clock divider
     constant DIV_FACTOR : integer := 16;
 

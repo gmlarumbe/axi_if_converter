@@ -1,6 +1,23 @@
--- Write burst size is calculated according to current maximum allowed burst size.
--- AXI standard does not allow crossing 4kb boundaries in the same burst.
-
+-------------------------------------------------------------------------------
+-- Title      : Core Converter
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : core_converter.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
 
 library ieee;
 library xil_defaultlib;
@@ -244,7 +261,7 @@ begin
 
     axi_rready <=
         m_axis_tready when (read_start = '1' and (unsigned(transaction_rd_size)-1) >= unsigned(transaction_rd_counter)) else
-        '1' when (read_start = '1' and (unsigned(burst_read_counter) <= C_M_AXI_BURST_LEN-1)) else
+        '1'           when (read_start = '1' and (unsigned(burst_read_counter) <= C_M_AXI_BURST_LEN-1)) else
         '0';
 
     m_axis_tdest <= '0';
@@ -291,19 +308,19 @@ begin
     begin
         if (rising_edge(m_axi_aclk)) then
             if (m_axi_aresetn = '0' or soft_reset = '1') then
-                state              <= IDLE;
-                conv_rsp.s2mm_done <= '0';
-                conv_rsp.mm2s_done <= '0';
+                state                    <= IDLE;
+                conv_rsp.s2mm_done       <= '0';
+                conv_rsp.mm2s_done       <= '0';
                 wr_burst_size_calc_start <= '0';
                 rd_burst_size_calc_start <= '0';
-                base_wr_addr        <= (others => '0');
-                transaction_wr_size <= (others => '0');
-                transaction_rd_size <= (others => '0');
-                wr_burst_start      <= '0';
-                write_start         <= '0';
-                base_rd_addr        <= (others => '0');
-                rd_burst_start      <= '0';
-                read_start          <= '0';
+                base_wr_addr             <= (others => '0');
+                transaction_wr_size      <= (others => '0');
+                transaction_rd_size      <= (others => '0');
+                wr_burst_start           <= '0';
+                write_start              <= '0';
+                base_rd_addr             <= (others => '0');
+                rd_burst_start           <= '0';
+                read_start               <= '0';
             else
                 case (state) is
                     when IDLE =>

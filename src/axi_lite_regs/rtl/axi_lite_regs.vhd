@@ -1,3 +1,24 @@
+-------------------------------------------------------------------------------
+-- Title      : AXI Lite Registers
+-- Project    :
+-------------------------------------------------------------------------------
+-- File       : axi_lite_regs.vhd
+-- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
+-- Company    :
+-- Created    : 2020-02-12
+-- Last update: 2020-02-12
+-- Platform   : Debian 9.1
+-- Standard   : VHDL'08
+-------------------------------------------------------------------------------
+-- Description:
+-------------------------------------------------------------------------------
+-- Copyright (c) 2020
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 2020-02-12  1.0      larumbe Created
+-------------------------------------------------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -113,10 +134,22 @@ architecture RTL of axi_lite_regs is
     signal count_rch_reg            : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
     signal pattern_count_rch_reg    : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 
-    attribute keep                : boolean;
-    attribute keep of control_reg : signal is true;
-    attribute keep of status_reg  : signal is true;
-    attribute keep of version_reg : signal is true;
+    attribute keep                             : boolean;
+    attribute keep of control_reg              : signal is true;
+    attribute keep of status_reg               : signal is true;
+    attribute keep of version_reg              : signal is true;
+    attribute keep of converter_setup_reg      : signal is true;
+    attribute keep of mm2s_size_reg            : signal is true;
+    attribute keep of master_lite_wr_setup_reg : signal is true;
+    attribute keep of master_lite_wr_add_reg   : signal is true;
+    attribute keep of master_lite_wr_data_reg  : signal is true;
+    attribute keep of master_lite_rd_setup_reg : signal is true;
+    attribute keep of master_lite_rd_add_reg   : signal is true;
+    attribute keep of master_lite_rd_data_reg  : signal is true;
+    attribute keep of count_lch_reg            : signal is true;
+    attribute keep of pattern_count_lch_reg    : signal is true;
+    attribute keep of count_rch_reg            : signal is true;
+    attribute keep of pattern_count_rch_reg    : signal is true;
 
     -- Bit aliases
     alias BIT_ENABLE     : std_logic is control_reg(0);
