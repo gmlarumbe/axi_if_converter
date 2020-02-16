@@ -6,7 +6,7 @@
 -- Author     : Gonzalo Martinez Larumbe  <gonzalomlarumbe@gmail.com>
 -- Company    :
 -- Created    : 2020-02-12
--- Last update: 2020-02-12
+-- Last update: 2020-02-16
 -- Platform   : Debian 9.1
 -- Standard   : VHDL'08
 -------------------------------------------------------------------------------
@@ -478,6 +478,10 @@ begin
                     BIT_READ_REQUEST <= '0';
                 end if;
 
+                if (read_data_valid) then
+                    BIT_READ_DATA_VALID <= '1';
+                end if;
+
                 if (write_request) then
                     BIT_WRITE_REQUEST <= '0';
                 end if;
@@ -522,7 +526,6 @@ begin
                 count_rch_reg           <= std_logic_vector(count_rch);
                 pattern_count_rch_reg   <= std_logic_vector(pattern_count_rch);
                 -- Axi lite master read data
-                add_bit(read_data_valid, BIT_READ_DATA_VALID);
                 master_lite_rd_data_reg <= read_data;
             end if;
         end if;
